@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>비엔코 · 채널별 손익 대시보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0f14; --surface: #13181f; --surface2: #1a2030;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+    --text: #e8edf5; --text2: #8a95a8; --text3: #4a5568;
+    --accent: #4f8ef7; --accent2: #6ee7b7;
+    --pos: #34d399; --neg: #f87171; --neu: #60a5fa; --warn2: #fbbf24;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; min-height: 100vh; overflow-x: hidden; }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; background: rgba(12,15,20,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .header-left { display: flex; align-items: baseline; gap: 14px; }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; color: var(--accent); }
+  .period { font-size: 11px; color: var(--text2); background: var(--surface2); border: 1px solid var(--border2); padding: 3px 10px; border-radius: 20px; font-family: 'DM Mono', monospace; }
+  .header-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .badge { font-size: 10px; font-family: 'DM Mono', monospace; padding: 4px 10px; border-radius: 4px; border: 1px solid; letter-spacing: 0.5px; }
+  .badge-conf { color: var(--warn2); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.06); }
+  .badge-live { color: var(--pos); border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.06); cursor: pointer; }
+  .badge-live:hover { background: rgba(52,211,153,0.12); }
+
+  /* MONTH FILTER */
+  .month-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 8px 28px; display: flex; gap: 6px; overflow-x: auto; flex-wrap: nowrap; }
+  .month-bar::-webkit-scrollbar { height: 3px; }
+  .month-bar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+  .m-btn { font-size: 11px; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: 'DM Mono', monospace; white-space: nowrap; transition: all 0.15s; }
+  .m-btn:hover { border-color: var(--border2); color: var(--text); }
+  .m-btn.active { background: rgba(79,142,247,0.12); border-color: rgba(79,142,247,0.4); color: var(--accent); }
+  .m-btn.qsum { border-style: dashed; }
+
+  /* LAYOUT */
+  .main { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 100px); }
+  .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 20px 0; position: sticky; top: 100px; height: calc(100vh - 100px); overflow-y: auto; }
+  .sidebar::-webkit-scrollbar { width: 3px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+  .content { padding: 28px 32px; overflow-y: auto; }
+
+  /* SIDEBAR NAV */
+  .nav-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); padding: 12px 20px 4px; font-family: 'DM Mono', monospace; }
+  .nav-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 20px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; color: var(--text2); }
+  .nav-item:hover { background: var(--surface2); color: var(--text); border-left-color: var(--border2); }
+  .nav-item.active { background: rgba(79,142,247,0.08); color: var(--accent); border-left-color: var(--accent); }
+  .nav-item-name { font-size: 12px; }
+  .nav-om { font-family: 'DM Mono', monospace; font-size: 10px; padding: 1px 6px; border-radius: 3px; min-width: 52px; text-align: right; }
+  .om-pos { color: var(--pos); background: rgba(52,211,153,0.1); }
+  .om-neg { color: var(--neg); background: rgba(248,113,113,0.1); }
+  .om-neu { color: var(--warn2); background: rgba(251,191,36,0.1); }
+  .nav-group-btn { display: flex; align-items: center; gap: 8px; padding: 10px 20px; cursor: pointer; color: var(--text2); transition: all 0.15s; }
+  .nav-group-btn:hover { color: var(--text); }
+  .nav-group-btn.open { color: var(--text); }
+  .nav-group-arrow { font-size: 8px; transition: transform 0.2s; }
+  .nav-group-btn.open .nav-group-arrow { transform: rotate(90deg); }
+  .nav-group-title { font-size: 11px; font-weight: 500; letter-spacing: 0.5px; }
+  .nav-children { display: none; }
+  .nav-children.open { display: block; }
+
+  /* SUMMARY */
+  .summary-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px; }
+  .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; position: relative; overflow: hidden; }
+  .summary-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); opacity: 0.6; }
+  .sc-label { font-size: 10px; color: var(--text2); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
+  .sc-value { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; }
+  .sc-sub { font-size: 11px; color: var(--text2); margin-top: 4px; font-family: 'DM Mono', monospace; }
+
+  /* CHANNEL CARDS */
+  .section-title { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .section-title h2 { font-size: 14px; font-weight: 500; }
+  .stag { font-size: 9px; font-family: 'DM Mono', monospace; letter-spacing: 1px; color: var(--accent); background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.2); padding: 2px 8px; border-radius: 3px; }
+  .divider { flex: 1; height: 1px; background: var(--border); }
+  .col-header { display: grid; grid-template-columns: 1fr repeat(4,140px); padding: 6px 20px 10px; gap: 8px; }
+  .col-h { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); text-align: right; font-family: 'DM Mono', monospace; }
+  .col-h:first-child { text-align: left; }
+
+  .channel-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 16px; transition: border-color 0.2s; }
+  .channel-card:hover { border-color: var(--border2); }
+  .channel-header { display: grid; grid-template-columns: 1fr repeat(4,140px); align-items: center; padding: 14px 20px; cursor: pointer; gap: 8px; }
+  .channel-name-wrap { display: flex; align-items: center; gap: 10px; }
+  .ch-brand { font-size: 9px; font-family: 'DM Mono', monospace; color: var(--text3); background: var(--surface2); padding: 2px 6px; border-radius: 3px; }
+  .ch-name { font-size: 13px; font-weight: 500; }
+  .metric-col { text-align: right; }
+  .metric-main { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; }
+  .metric-pct { font-size: 10px; font-family: 'DM Mono', monospace; margin-top: 2px; }
+  .bar-wrap { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+  .bar-track { flex: 1; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 2px; }
+  .bar-pos { background: linear-gradient(90deg, var(--pos), var(--accent2)); }
+  .bar-neg { background: var(--neg); }
+
+  /* DETAIL PANEL */
+  .detail-panel { display: none; border-top: 1px solid var(--border); background: rgba(255,255,255,0.015); padding: 20px; }
+  .detail-panel.open { display: block; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .detail-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 10px; font-family: 'DM Mono', monospace; }
+  .waterfall { display: flex; flex-direction: column; gap: 4px; }
+  .wf-row { display: flex; align-items: center; gap: 10px; }
+  .wf-label { font-size: 11px; color: var(--text2); width: 130px; flex-shrink: 0; }
+  .wf-bar-area { flex: 1; display: flex; align-items: center; position: relative; height: 20px; }
+  .wf-bar { height: 14px; border-radius: 2px; position: absolute; min-width: 2px; }
+  .wf-bar.revenue { background: rgba(79,142,247,0.6); }
+  .wf-bar.cogs { background: rgba(248,113,113,0.5); }
+  .wf-bar.fee { background: rgba(251,191,36,0.4); }
+  .wf-bar.adv { background: rgba(248,113,113,0.35); }
+  .wf-bar.logi { background: rgba(248,113,113,0.3); }
+  .wf-bar.labor { background: rgba(167,139,250,0.5); }
+  .wf-bar.gp { background: rgba(52,211,153,0.6); }
+  .wf-bar.ci { background: rgba(52,211,153,0.45); }
+  .wf-bar.om-pos { background: rgba(52,211,153,0.8); }
+  .wf-bar.om-neg { background: rgba(248,113,113,0.8); }
+  .wf-value { font-family: 'DM Mono', monospace; font-size: 10px; width: 80px; text-align: right; flex-shrink: 0; }
+  .wf-divider { border: none; border-top: 1px dashed var(--border2); margin: 2px 0; }
+  .indirect-box { background: var(--surface2); border-radius: 8px; padding: 14px 16px; }
+  .indirect-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .indirect-row:last-child { border: none; }
+  .indirect-key { font-size: 11px; color: var(--text2); }
+  .indirect-val { font-family: 'DM Mono', monospace; font-size: 11px; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: var(--surface2); font-size: 10px; font-weight: 500; color: var(--text2); text-align: right; padding: 8px 12px; white-space: nowrap; position: sticky; top: 0; border-bottom: 1px solid var(--border2); }
+  th:first-child, th:nth-child(2) { text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: 11px; text-align: right; white-space: nowrap; }
+  td:first-child { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; color: var(--text2); }
+  td:nth-child(2) { font-family: 'Noto Sans KR', sans-serif; font-size: 12px; font-weight: 500; text-align: left; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  tfoot td { background: var(--surface2); font-weight: 600; border-top: 1px solid var(--border2); }
+
+  /* VIEW TOGGLE */
+  .view-toggle { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px; width: fit-content; }
+  .view-btn { font-size: 11px; padding: 6px 14px; border-radius: 5px; border: none; cursor: pointer; background: transparent; color: var(--text2); font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
+  .view-btn.active { background: var(--surface2); color: var(--text); border: 1px solid var(--border2); }
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .filter-btn { font-size: 11px; padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
+  .filter-btn:hover { border-color: var(--border2); color: var(--text); }
+  .filter-btn.active { background: rgba(79,142,247,0.12); border-color: rgba(79,142,247,0.4); color: var(--accent); }
+
+  /* LOADING */
+  .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; gap: 16px; }
+  .spinner { width: 32px; height: 32px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text2); }
+  .error-box { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); border-radius: 8px; padding: 20px; margin: 20px 0; }
+  .error-box p { color: var(--neg); font-size: 12px; font-family: 'DM Mono', monospace; line-height: 1.8; }
+
+  .footer { margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--text3); font-size: 10px; font-family: 'DM Mono', monospace; }
+
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 1fr; }
+    .sidebar { position: relative; height: auto; top: 0; }
+    .summary-grid { grid-template-columns: repeat(2,1fr); }
+    .channel-header, .col-header { grid-template-columns: 1fr repeat(2,120px); }
+    .metric-col:nth-child(3), .metric-col:nth-child(4) { display: none; }
+    .col-h:nth-child(3), .col-h:nth-child(4) { display: none; }
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <span class="logo">BNCo</span>
+    <span class="period" id="period-label">로딩 중...</span>
+  </div>
+  <div class="header-right">
+    <span class="badge badge-live" onclick="loadData()" title="클릭하면 새로고침">⟳ LIVE</span>
+    <span class="badge badge-conf">CONFIDENTIAL</span>
+  </div>
+</header>
+
+<!-- 월별 필터 -->
+<div class="month-bar" id="month-bar">
+  <button class="m-btn active" data-period="1Q합계" onclick="setPeriod('1Q합계',this)">1Q 합계</button>
+  <button class="m-btn" data-period="4월" onclick="setPeriod('4월',this)">4월</button>
+  <button class="m-btn" data-period="5월" onclick="setPeriod('5월',this)">5월</button>
+  <button class="m-btn" data-period="6월" onclick="setPeriod('6월',this)">6월</button>
+  <button class="m-btn qsum" data-period="2Q소계" onclick="setPeriod('2Q소계',this)">2Q 소계</button>
+  <button class="m-btn" data-period="7월" onclick="setPeriod('7월',this)">7월</button>
+  <button class="m-btn" data-period="8월" onclick="setPeriod('8월',this)">8월</button>
+  <button class="m-btn" data-period="9월" onclick="setPeriod('9월',this)">9월</button>
+  <button class="m-btn qsum" data-period="3Q소계" onclick="setPeriod('3Q소계',this)">3Q 소계</button>
+  <button class="m-btn" data-period="10월" onclick="setPeriod('10월',this)">10월</button>
+  <button class="m-btn" data-period="11월" onclick="setPeriod('11월',this)">11월</button>
+  <button class="m-btn" data-period="12월" onclick="setPeriod('12월',this)">12월</button>
+  <button class="m-btn qsum" data-period="4Q소계" onclick="setPeriod('4Q소계',this)">4Q 소계</button>
+</div>
+
+<div class="main">
+  <nav class="sidebar" id="sidebar"><div class="loading"><div class="spinner"></div></div></nav>
+  <div class="content" id="content"><div class="loading"><div class="spinner"></div><div class="loading-text">구글 시트 데이터 로딩 중...</div></div></div>
+</div>
+
+<script>
+// ── 구글 시트 설정 ──────────────────────────────────────────────
+const SHEET_ID = '1ixpBV1Yql_0kmc6h2KI221OTjXJFC-eBjKr3Ycf5d1c';
+const GID      = '1504174545';
+
+// 각 기간별 블록 시작 열 (1-indexed, D=4)
+const PERIOD_COL = {
+  '1Q합계': 4,
+  '4월': 23,  '5월': 40,  '6월': 57,  '2Q소계': 74,
+  '7월': 91,  '8월': 108, '9월': 125, '3Q소계': 142,
+  '10월': 159,'11월': 176,'12월': 193,'4Q소계': 210,
+};
+// 블록 내 오프셋 (0-indexed from 블록 시작)
+const OFF = { rev:0, ret:1, net:2, cogs:3, gp:5, fee:7, adv:8, opfee:9, logi:10, ci:11, labor:13, ofixed:14, om:15 };
+
+// 소계/구분 행 판별
+const SKIP_ROWS = new Set([5,19,24,28,31,43,18,23,27,30,42,57,58]);
+// 채널 그룹 매핑 (행번호 → 그룹명)
+const ROW_GROUP = {
+  6:'B2C 국내',7:'B2C 국내',8:'B2C 국내',9:'B2C 국내',10:'B2C 국내',
+  11:'B2C 국내',12:'B2C 국내',13:'B2C 국내',14:'B2C 국내',
+  15:'B2C 국내',16:'B2C 국내',17:'B2C 국내',
+  20:'B2C 일본',21:'B2C 일본',22:'B2C 일본',
+  25:'B2C 미국',26:'B2C 미국',
+  29:'B2C 중국',
+  32:'B2B 국내',33:'B2B 국내',34:'B2B 국내',35:'B2B 국내',
+  36:'B2B 국내',37:'B2B 국내',38:'B2B 국내',39:'B2B 국내',
+  40:'B2B 국내',41:'B2B 국내',
+  44:'B2B 해외',45:'B2B 해외',46:'B2B 해외',47:'B2B 해외',
+  48:'B2B 해외',49:'B2B 해외',50:'B2B 해외',51:'B2B 해외',
+  52:'B2B 해외',53:'B2B 해외',54:'B2B 해외',55:'B2B 해외',56:'B2B 해외',
+};
+const GROUPS = ['B2C 국내','B2C 일본','B2C 미국','B2C 중국','B2B 국내','B2B 해외'];
+
+// ── 상태 ──────────────────────────────────────────────────────
+let rawRows   = [];   // CSV 전체 행 (배열 of 배열)
+let CHANNELS  = [];   // 현재 기간 파싱 결과
+let activePeriod = '1Q합계';
+let activeGrp    = 'ALL';
+let openCards    = new Set();
+let viewMode     = 'cards';
+
+// ── 유틸 ──────────────────────────────────────────────────────
+const n  = v => { const x = parseFloat(v); return isNaN(x) ? 0 : x; };
+const fmt = v => {
+  const abs = Math.abs(v), s = v < 0 ? '-' : '';
+  if (abs >= 1e8) return s + (abs/1e8).toFixed(1) + '억';
+  if (abs >= 1e4) return s + Math.round(abs/1e4).toLocaleString() + '만';
+  return v.toLocaleString();
+};
+const fmtM = v => {
+  const abs = Math.abs(v), s = v < 0 ? '-' : '';
+  if (abs >= 1e8) return s + (abs/1e8).toFixed(2) + '억';
+  return s + Math.round(abs/1e4).toLocaleString() + '만';
+};
+const pct = v => (v >= 0 ? '+' : '') + (v*100).toFixed(1) + '%';
+const pc  = v => v > 0.05 ? 'pos' : v < 0 ? 'neg' : 'neu';
+const omc = v => v > 0.05 ? 'om-pos' : v < 0 ? 'om-neg' : 'om-neu';
+const colorOf = v => v > 0 ? 'var(--pos)' : v < 0 ? 'var(--neg)' : 'var(--warn2)';
+
+// ── CSV 파싱 ──────────────────────────────────────────────────
+function parseCSV(text) {
+  const rows = [];
+  let cur = '', inQ = false, row = [];
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { row.push(cur.trim()); cur = ''; }
+    else if ((c === '\n' || c === '\r') && !inQ) {
+      if (c === '\r' && text[i+1] === '\n') i++;
+      row.push(cur.trim()); rows.push(row); row = []; cur = '';
+    } else { cur += c; }
+  }
+  if (cur || row.length) { row.push(cur.trim()); rows.push(row); }
+  return rows;
+}
+
+// ── 데이터 로드 ───────────────────────────────────────────────
+async function loadData() {
+  document.getElementById('content').innerHTML = `<div class="loading"><div class="spinner"></div><div class="loading-text">구글 시트 데이터 로딩 중...</div></div>`;
+  document.getElementById('sidebar').innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2lZFx1126omNkGRGT6Y6bMPoDC49yJfZW3cftiowoI3geEhAJL9sfrmQKNKpRAKCeCA/exec';
+
+  try {
+    // JSONP 방식으로 CORS 우회
+    const data = await new Promise((resolve, reject) => {
+      const cbName = 'cb_' + Date.now();
+      const script = document.createElement('script');
+      const timer = setTimeout(() => {
+        delete window[cbName];
+        document.body.removeChild(script);
+        reject(new Error('timeout'));
+      }, 15000);
+      window[cbName] = (d) => {
+        clearTimeout(timer);
+        delete window[cbName];
+        document.body.removeChild(script);
+        resolve(d);
+      };
+      script.src = SCRIPT_URL + '?callback=' + cbName + '&t=' + Date.now();
+      script.onerror = () => { clearTimeout(timer); reject(new Error('script load failed')); };
+      document.body.appendChild(script);
+    });
+    rawRows = data;
+    parseForPeriod(activePeriod);
+    document.getElementById('period-label').textContent = `${activePeriod} · ${new Date().toLocaleDateString('ko-KR')} 기준`;
+    render();
+  } catch(e) {
+    document.getElementById('content').innerHTML = `
+      <div class="error-box">
+        <p>⚠ 구글 시트 연결 실패: ${e.message}</p>
+        <p style="margin-top:6px;font-size:11px">Apps Script 배포 설정을 확인하세요<br>액세스: 모든 사용자 (익명 포함)</p>
+        <p style="margin-top:8px"><button onclick="loadData()" style="background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.3);color:var(--neg);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px">다시 시도</button></p>
+      </div>`;
+  }
+}
+
+// ── 기간별 파싱 ────────────────────────────────────────────────
+function parseForPeriod(period) {
+  const baseCol = PERIOD_COL[period];   // 1-indexed
+  CHANNELS = [];
+
+  // rawRows[0] = 1행(타이틀), [1]=2행, [2]=3행(그룹헤더), [3]=4행(세부헤더), [4]=5행(첫데이터)
+  // 행번호(1-indexed) → rawRows 인덱스 = 행번호 - 1
+  for (const [rowNum, grp] of Object.entries(ROW_GROUP)) {
+    const ri = parseInt(rowNum) - 1;
+    if (ri >= rawRows.length) continue;
+    const row = rawRows[ri];
+    if (!row || row.length < 4) continue;
+
+    const country = row[0] || '';
+    const brand   = row[1] || '';
+    const ch      = row[2] || '';
+    if (!ch || ch.includes('소계') || ch.includes('합계') || ch.startsWith('──')) continue;
+
+    // 블록 시작 열(1-indexed) → 배열 인덱스 = 열번호 - 1
+    const b = baseCol - 1;
+    const get = off => n(row[b + OFF[off]] || 0);
+
+    const rev   = get('rev');
+    const ret   = get('ret');
+    const net   = rev - ret;
+    const cogs  = get('cogs');
+    const gp    = net - cogs;
+    const fee   = get('fee');
+    const adv   = get('adv');
+    const opfee = get('opfee');
+    const logi  = get('logi');
+    const ci    = get('ci');
+    const labor = get('labor');
+    const ofixed= get('ofixed');
+    const om    = get('om');
+
+    CHANNELS.push({
+      grp, country, brand, ch, rev, ret, net, cogs, gp,
+      gp_pct: net ? gp/net : 0,
+      fee, adv, opfee, logi,
+      direct: fee+adv+opfee+logi,
+      ci,
+      ci_pct: net ? ci/net : 0,
+      labor, ofixed,
+      fixed_total: labor+ofixed,
+      om,
+      om_pct: net ? om/net : 0,
+    });
+  }
+}
+
+// ── 기간 전환 ─────────────────────────────────────────────────
+function setPeriod(period, btn) {
+  if (!rawRows.length) return;
+  activePeriod = period;
+  document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('period-label').textContent = `${period} · ${new Date().toLocaleDateString('ko-KR')} 기준`;
+  parseForPeriod(period);
+  openCards.clear();
+  render();
+}
+
+// ── SIDEBAR ────────────────────────────────────────────────────
+function buildSidebar() {
+  const totRev = CHANNELS.reduce((s,d)=>s+d.rev,0);
+  const totOM  = CHANNELS.reduce((s,d)=>s+d.om,0);
+  let html = `<div><div class="nav-label">개요</div>
+    <div class="nav-item ${activeGrp==='ALL'?'active':''}" onclick="setGrp('ALL')">
+      <span class="nav-item-name">전체 채널</span>
+      <span class="nav-om ${omc(totRev?totOM/totRev:0)}">${pct(totRev?totOM/totRev:0)}</span>
+    </div></div>
+    <div><div class="nav-label">세그먼트</div>`;
+
+  GROUPS.forEach(grp => {
+    const chs = CHANNELS.filter(d=>d.grp===grp);
+    if (!chs.length) return;
+    const gR = chs.reduce((s,d)=>s+d.rev,0);
+    const gO = chs.reduce((s,d)=>s+d.om,0);
+    const gP = gR ? gO/gR : 0;
+    const isOpen = activeGrp===grp || chs.some(c=>c.ch===activeGrp);
+    html += `<div>
+      <div class="nav-group-btn ${isOpen?'open':''}" onclick="toggleNav('${grp}')">
+        <span class="nav-group-arrow">▶</span>
+        <span class="nav-group-title">${grp}</span>
+        <span class="nav-om ${omc(gP)}" style="margin-left:auto">${pct(gP)}</span>
+      </div>
+      <div class="nav-children ${isOpen?'open':''}" id="nav-ch-${grp.replace(/ /g,'_')}">
+        ${chs.map(c=>`
+          <div class="nav-item ${activeGrp===c.ch?'active':''}" onclick="setGrp('${c.ch}')" style="padding-left:32px">
+            <span class="nav-item-name">${c.ch}</span>
+            <span class="nav-om ${omc(c.om_pct)}">${pct(c.om_pct)}</span>
+          </div>`).join('')}
+      </div></div>`;
+  });
+  html += '</div>';
+  document.getElementById('sidebar').innerHTML = html;
+}
+
+function toggleNav(grp) {
+  const el = document.getElementById(`nav-ch-${grp.replace(/ /g,'_')}`);
+  el.classList.toggle('open');
+  el.previousElementSibling.classList.toggle('open');
+}
+function setGrp(grp) { activeGrp=grp; openCards.clear(); buildSidebar(); renderContent(); }
+function setView(m)   { viewMode=m; renderContent(); }
+
+// ── SUMMARY ───────────────────────────────────────────────────
+function buildSummary(chs) {
+  const rev=chs.reduce((s,d)=>s+d.rev,0), gp=chs.reduce((s,d)=>s+d.gp,0),
+        ci=chs.reduce((s,d)=>s+d.ci,0),   om=chs.reduce((s,d)=>s+d.om,0);
+  const gpP=rev?gp/rev:0, ciP=rev?ci/rev:0, omP=rev?om/rev:0;
+  return `<div class="summary-grid">
+    <div class="summary-card"><div class="sc-label">매출액</div>
+      <div class="sc-value" style="color:var(--neu)">${fmtM(rev)}</div>
+      <div class="sc-sub">${chs.filter(d=>d.rev!==0).length}개 활성 채널</div></div>
+    <div class="summary-card"><div class="sc-label">매출총이익 (GP)</div>
+      <div class="sc-value" style="color:${colorOf(gp)}">${fmtM(gp)}</div>
+      <div class="sc-sub">GP율 ${pct(gpP)}</div></div>
+    <div class="summary-card"><div class="sc-label">공헌이익 (CI)</div>
+      <div class="sc-value" style="color:${colorOf(ci)}">${fmtM(ci)}</div>
+      <div class="sc-sub">CI율 ${pct(ciP)}</div></div>
+    <div class="summary-card"><div class="sc-label">영업이익 (OM)</div>
+      <div class="sc-value" style="color:${colorOf(om)}">${fmtM(om)}</div>
+      <div class="sc-sub">OM율 ${pct(omP)}</div></div>
+  </div>`;
+}
+
+// ── WATERFALL ROW ─────────────────────────────────────────────
+function wfRow(label, value, cls, maxVal, indent=false) {
+  const bw = maxVal>0 ? Math.min(100, Math.abs(value)/maxVal*100) : 0;
+  return `<div class="wf-row">
+    <span class="wf-label" style="${indent?'padding-left:12px;font-size:10px':''}}">${label}</span>
+    <div class="wf-bar-area">
+      <div class="wf-bar ${cls}" style="width:${bw}%;left:${value>=0?0:100-bw}%"></div>
+    </div>
+    <span class="wf-value" style="color:${colorOf(value)}">${fmt(value)}</span>
+  </div>`;
+}
+
+// ── CHANNEL CARD ──────────────────────────────────────────────
+function buildCard(d, maxRev) {
+  const isOpen = openCards.has(d.ch);
+  const bw = maxRev>0 ? Math.abs(d.rev)/maxRev*100 : 0;
+  const wfMax = Math.abs(d.rev) || Math.abs(d.om) || 1;
+  const id = 'card-' + d.ch.replace(/[^a-zA-Z0-9]/g,'_');
+  return `<div class="channel-card" id="${id}">
+    <div class="channel-header" onclick="toggleCard('${d.ch}')">
+      <div class="channel-name-wrap"><div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span class="ch-brand">${d.brand}</span>
+          <span style="font-size:9px;color:var(--text3);font-family:'DM Mono',monospace">${d.country}</span>
+        </div>
+        <div class="ch-name">${d.ch}</div>
+        <div class="bar-wrap"><div class="bar-track"><div class="bar-fill ${d.rev>=0?'bar-pos':'bar-neg'}" style="width:${bw}%"></div></div></div>
+      </div></div>
+      <div class="metric-col">
+        <div class="metric-main" style="color:var(--neu)">${fmtM(d.rev)}</div>
+        <div class="metric-pct" style="color:var(--text2)">매출액</div>
+      </div>
+      <div class="metric-col">
+        <div class="metric-main" style="color:${colorOf(d.gp)}">${fmtM(d.gp)}</div>
+        <div class="metric-pct" style="color:${colorOf(d.gp_pct)}">GP ${pct(d.gp_pct)}</div>
+      </div>
+      <div class="metric-col">
+        <div class="metric-main" style="color:${colorOf(d.ci)}">${fmtM(d.ci)}</div>
+        <div class="metric-pct" style="color:${colorOf(d.ci_pct)}">CI ${pct(d.ci_pct)}</div>
+      </div>
+      <div class="metric-col">
+        <div class="metric-main" style="color:${colorOf(d.om)}">${fmtM(d.om)}</div>
+        <div class="metric-pct" style="color:${colorOf(d.om_pct)}">OM ${pct(d.om_pct)}</div>
+      </div>
+    </div>
+    <div class="detail-panel ${isOpen?'open':''}">
+      <div class="detail-grid">
+        <div>
+          <div class="detail-section-title">손익 구조</div>
+          <div class="waterfall">
+            ${wfRow('매출액', d.rev, 'revenue', wfMax)}
+            ${wfRow('제품원가', -d.cogs, 'cogs', wfMax)}
+            <hr class="wf-divider">
+            ${wfRow('매출총이익 (GP)', d.gp, d.gp>=0?'gp':'om-neg', wfMax)}
+            ${d.fee  ? wfRow('판매수수료', -d.fee,  'fee',  wfMax, true) : ''}
+            ${d.adv  ? wfRow('광고/프로모션', -d.adv, 'adv',  wfMax, true) : ''}
+            ${d.opfee? wfRow('운영대행비', -d.opfee,'fee',  wfMax, true) : ''}
+            ${d.logi ? wfRow('운반/물류비', -d.logi, 'logi', wfMax, true) : ''}
+            <hr class="wf-divider">
+            ${wfRow('공헌이익 (CI)', d.ci, d.ci>=0?'ci':'om-neg', wfMax)}
+            ${wfRow('간접비 합계', -d.fixed_total, 'labor', wfMax, true)}
+            <hr class="wf-divider">
+            ${wfRow('영업이익 (OM)', d.om, d.om>=0?'om-pos':'om-neg', wfMax)}
+          </div>
+        </div>
+        <div>
+          <div class="detail-section-title">간접비 구성</div>
+          <div class="indirect-box" style="margin-bottom:16px">
+            <div class="indirect-row"><span class="indirect-key">인건비 (배분)</span><span class="indirect-val">${fmt(d.labor)}</span></div>
+            <div class="indirect-row"><span class="indirect-key">기타 간접비</span><span class="indirect-val">${fmt(d.ofixed)}</span></div>
+            <div class="indirect-row" style="border-top:1px solid var(--border2);margin-top:4px;padding-top:8px">
+              <span class="indirect-key" style="color:var(--text)">간접비 합계</span>
+              <span class="indirect-val" style="color:var(--neg)">- ${fmt(d.fixed_total)}</span>
+            </div>
+          </div>
+          <div class="detail-section-title">수익성 지표</div>
+          <div class="indirect-box">
+            <div class="indirect-row"><span class="indirect-key">매출액</span><span class="indirect-val">${fmt(d.rev)}</span></div>
+            <div class="indirect-row"><span class="indirect-key">GP율</span><span class="indirect-val" style="color:${colorOf(d.gp_pct)}">${pct(d.gp_pct)}</span></div>
+            <div class="indirect-row"><span class="indirect-key">직접비 합계</span><span class="indirect-val" style="color:var(--neg)">- ${fmt(d.direct)}</span></div>
+            <div class="indirect-row"><span class="indirect-key">CI율</span><span class="indirect-val" style="color:${colorOf(d.ci_pct)}">${pct(d.ci_pct)}</span></div>
+            <div class="indirect-row"><span class="indirect-key" style="color:var(--text)">OM율</span>
+              <span class="indirect-val" style="color:${colorOf(d.om_pct)};font-size:13px">${pct(d.om_pct)}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── TABLE VIEW ────────────────────────────────────────────────
+function buildTable(chs) {
+  const tR=chs.reduce((s,d)=>s+d.rev,0), tGP=chs.reduce((s,d)=>s+d.gp,0),
+        tCI=chs.reduce((s,d)=>s+d.ci,0), tFx=chs.reduce((s,d)=>s+d.fixed_total,0),
+        tOM=chs.reduce((s,d)=>s+d.om,0);
+  return `<div class="table-wrap"><table>
+    <thead><tr>
+      <th>세그먼트</th><th>채널</th><th>매출액</th>
+      <th>GP</th><th>GP율</th><th>CI</th><th>CI율</th>
+      <th>간접비</th><th>OM</th><th>OM율</th>
+    </tr></thead>
+    <tbody>${chs.map(d=>`<tr>
+      <td>${d.grp}</td><td>${d.ch}</td>
+      <td style="color:var(--neu)">${fmt(d.rev)}</td>
+      <td style="color:${colorOf(d.gp)}">${fmt(d.gp)}</td>
+      <td style="color:${colorOf(d.gp_pct)}">${pct(d.gp_pct)}</td>
+      <td style="color:${colorOf(d.ci)}">${fmt(d.ci)}</td>
+      <td style="color:${colorOf(d.ci_pct)}">${pct(d.ci_pct)}</td>
+      <td style="color:var(--text2)">${fmt(d.fixed_total)}</td>
+      <td style="color:${colorOf(d.om)}">${fmt(d.om)}</td>
+      <td style="color:${colorOf(d.om_pct)}">${pct(d.om_pct)}</td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr>
+      <td colspan="2">합계 (${chs.length}채널)</td>
+      <td style="color:var(--neu)">${fmt(tR)}</td>
+      <td style="color:${colorOf(tGP)}">${fmt(tGP)}</td>
+      <td style="color:${colorOf(tR?tGP/tR:0)}">${pct(tR?tGP/tR:0)}</td>
+      <td style="color:${colorOf(tCI)}">${fmt(tCI)}</td>
+      <td style="color:${colorOf(tR?tCI/tR:0)}">${pct(tR?tCI/tR:0)}</td>
+      <td style="color:var(--text2)">${fmt(tFx)}</td>
+      <td style="color:${colorOf(tOM)}">${fmt(tOM)}</td>
+      <td style="color:${colorOf(tR?tOM/tR:0)}">${pct(tR?tOM/tR:0)}</td>
+    </tr></tfoot>
+  </table></div>`;
+}
+
+// ── MAIN RENDER ───────────────────────────────────────────────
+function renderContent() {
+  let chs;
+  if (activeGrp==='ALL') chs = CHANNELS;
+  else if (GROUPS.includes(activeGrp)) chs = CHANNELS.filter(d=>d.grp===activeGrp);
+  else chs = CHANNELS.filter(d=>d.ch===activeGrp);
+
+  const title = activeGrp==='ALL' ? '전체 채널' : activeGrp;
+  const stag  = activeGrp==='ALL' ? 'ALL' : GROUPS.includes(activeGrp) ? 'SEGMENT' : 'CHANNEL';
+  const maxRev = Math.max(...chs.map(d=>Math.abs(d.rev)), 1);
+
+  let filterBar = activeGrp==='ALL' ? `<div class="filter-bar">
+    <button class="filter-btn active" onclick="setGrp('ALL')">전체</button>
+    ${GROUPS.map(g=>`<button class="filter-btn" onclick="setGrp('${g}')">${g}</button>`).join('')}
+  </div>` : '';
+
+  let body = '';
+  if (viewMode==='table') {
+    body = buildTable(chs);
+  } else {
+    if (activeGrp==='ALL') {
+      GROUPS.forEach(grp => {
+        const gc = chs.filter(d=>d.grp===grp);
+        if (!gc.length) return;
+        const gR=gc.reduce((s,d)=>s+d.rev,0), gO=gc.reduce((s,d)=>s+d.om,0);
+        body += `<div style="margin-bottom:28px">
+          <div class="section-title">
+            <h2>${grp}</h2><span class="stag">SEGMENT</span>
+            <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text2)">OM ${pct(gR?gO/gR:0)} · ${gc.length}채널</span>
+            <div class="divider"></div>
+          </div>
+          <div class="col-header">
+            <div class="col-h">채널</div><div class="col-h">매출액</div>
+            <div class="col-h">GP</div><div class="col-h">CI</div><div class="col-h">OM</div>
+          </div>
+          ${gc.map(d=>buildCard(d,maxRev)).join('')}
+        </div>`;
+      });
+    } else {
+      body = `<div class="col-header">
+        <div class="col-h">채널</div><div class="col-h">매출액</div>
+        <div class="col-h">GP</div><div class="col-h">CI</div><div class="col-h">OM</div>
+      </div>${chs.map(d=>buildCard(d,maxRev)).join('')}`;
+    }
+  }
+
+  document.getElementById('content').innerHTML = `
+    ${buildSummary(chs)}
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <div class="section-title" style="margin:0">
+        <h2>${title}</h2><span class="stag">${stag}</span>
+        <div class="divider" style="width:60px"></div>
+      </div>
+      <div class="view-toggle">
+        <button class="view-btn ${viewMode==='cards'?'active':''}" onclick="setView('cards')">카드뷰</button>
+        <button class="view-btn ${viewMode==='table'?'active':''}" onclick="setView('table')">테이블뷰</button>
+      </div>
+    </div>
+    ${filterBar}${body}
+    <div class="footer">
+      <span>비엔코 전략지원본부 · ${activePeriod} 가결산</span>
+      <span>CONFIDENTIAL — 내부 공유용</span>
+    </div>`;
+}
+
+function render() { buildSidebar(); renderContent(); }
+function toggleCard(ch) {
+  if (openCards.has(ch)) openCards.delete(ch); else openCards.add(ch);
+  renderContent();
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
