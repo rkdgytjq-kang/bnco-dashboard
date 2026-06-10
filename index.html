@@ -620,7 +620,6 @@ function buildCard(d, maxRev) {
       </div>
     </div>
     <div style="margin-top:16px;padding-top:0">
-      ${goalSection(d)}
       <div style="margin-top:10px">
         <button class="note-btn" onclick="toggleNote('${d.ch}')">📝 메모</button>
         <div id="notewrap-${d.ch.replace(/[^a-zA-Z0-9]/g,'_')}" style="display:${getNote(d.ch)?'block':'none'}">
@@ -760,13 +759,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeChangelog();
 });
 
-// ── GOALS (목표 관리, localStorage) ──────────────────────────
-const GOALS = JSON.parse(localStorage.getItem('bnco_goals') || '{}');
-function getGoal(ch) { return GOALS[ch] || 0; }
-function setGoal(ch, val) {
-  GOALS[ch] = val;
-  localStorage.setItem('bnco_goals', JSON.stringify(GOALS));
-}
+// (목표 저장 기능 제거됨 v2.1)
 
 // ── NOTES ─────────────────────────────────────────────────────
 const NOTES = JSON.parse(localStorage.getItem('bnco_notes') || '{}');
@@ -787,11 +780,26 @@ function toggleNote(ch) {
 
 // ── MoM 계산 ─────────────────────────────────────────────────
 const PREV_PERIOD = {
-  '4월':'1Q합계','5월':'4월','6월':'5월',
-  '7월':'2Q소계','8월':'7월','9월':'8월',
-  '10월':'3Q소계','11월':'10월','12월':'11월',
-  '2Q소계':'1Q합계','3Q소계':'2Q소계','4Q소계':'3Q소계',
-  '1Q합계':null
+  '1Q합계': null,   // MoM 없음
+  '4월':    null,   // 1Q와 월 단위 비교 불가
+  '5월':    '4월',
+  '6월':    '5월',
+  '2Q소계': '1Q합계',
+  '7월':    '2Q소계',
+  '8월':    '7월',
+  '9월':    '8월',
+  '3Q소계': '2Q소계',
+  '10월':   '3Q소계',
+  '11월':   '10월',
+  '12월':   '11월',
+  '4Q소계': '3Q소계',
+};
+// MoM 라벨 (배지 앞에 표시할 비교 기준 텍스트)
+const PREV_LABEL = {
+  '5월':'4월比','6월':'5월比',
+  '2Q소계':'1Q比','7월':'2Q比','8월':'7월比','9월':'8월比',
+  '3Q소계':'2Q比','10월':'3Q比','11월':'10월比','12월':'11월比',
+  '4Q소계':'3Q比',
 };
 let PREV_CHANNELS = [];
 function loadPrevPeriod() {
@@ -812,12 +820,14 @@ function getMoM(ch, field) {
   return (cur[field] - prev[field]) / Math.abs(prev[field]);
 }
 function momBadge(ch, field) {
+  if (!PREV_PERIOD[activePeriod]) return '';   // 1Q·4월은 표시 안 함
   const m = getMoM(ch, field);
   if (m === null) return '';
-  if (Math.abs(m) < 0.01) return '<span class="mom-badge mom-flat">±0</span>';
-  const cls = m > 0 ? 'mom-up' : 'mom-dn';
+  const label = PREV_LABEL[activePeriod] || '';
+  if (Math.abs(m) < 0.01) return `<span class="mom-badge mom-flat">${label} ±0</span>`;
+  const cls  = m > 0 ? 'mom-up' : 'mom-dn';
   const sign = m > 0 ? '▲' : '▼';
-  return `<span class="mom-badge ${cls}">${sign}${Math.abs(m*100).toFixed(0)}%</span>`;
+  return `<span class="mom-badge ${cls}">${label} ${sign}${Math.abs(m*100).toFixed(0)}%</span>`;
 }
 
 // ── BRAND SUMMARY ─────────────────────────────────────────────
@@ -878,73 +888,82 @@ function buildSimulator(chs) {
   const totRev = chs.reduce((s,d)=>s+d.rev,0);
   const totAdv = chs.reduce((s,d)=>s+d.adv,0);
   const totOM  = chs.reduce((s,d)=>s+d.om,0);
-  const totCI  = chs.reduce((s,d)=>s+d.ci,0);
+  const omP    = totRev ? totOM/totRev : 0;
   return `<div class="sim-panel">
-    <div style="font-size:12px;font-weight:500;margin-bottom:14px">손익분기 시뮬레이터</div>
-    <div class="sim-row">
-      <span class="sim-label">광고비 조정</span>
-      <input type="range" class="sim-slider" min="-50" max="50" value="0" step="5"
-        oninput="updateSim(this.value,'adv')" id="sim-adv">
-      <span class="sim-val" id="sim-adv-val">±0%</span>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:500">광고비 시뮬레이터</div>
+      <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">${activePeriod} 기준</div>
     </div>
-    <div class="sim-row">
-      <span class="sim-label">물류비 조정</span>
-      <input type="range" class="sim-slider" min="-50" max="50" value="0" step="5"
-        oninput="updateSim(this.value,'logi')" id="sim-logi">
-      <span class="sim-val" id="sim-logi-val">±0%</span>
-    </div>
-    <div class="sim-row">
-      <span class="sim-label">매출 조정</span>
-      <input type="range" class="sim-slider" min="-30" max="50" value="0" step="5"
-        oninput="updateSim(this.value,'rev')" id="sim-rev">
-      <span class="sim-val" id="sim-rev-val">±0%</span>
-    </div>
-    <div class="sim-result" id="sim-result">
-      <div class="sim-card">
-        <div class="sim-card-label">현재 OM</div>
-        <div class="sim-card-val" id="sim-cur-om" style="color:${colorOf(totOM)}">${fmtM(totOM)}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div style="background:var(--surface2);border-radius:8px;padding:12px">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">현재 광고비 합산</div>
+        <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--neg)">${fmtM(totAdv)}</div>
+        <div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px">
+          매출 대비 ${pct(totRev?totAdv/totRev:0)}
+        </div>
       </div>
-      <div class="sim-card">
-        <div class="sim-card-label">시뮬레이션 OM</div>
-        <div class="sim-card-val" id="sim-new-om" style="color:${colorOf(totOM)}">${fmtM(totOM)}</div>
-      </div>
-      <div class="sim-card">
-        <div class="sim-card-label">현재 OM율</div>
-        <div class="sim-card-val" id="sim-cur-omp" style="color:${colorOf(totOM/totRev||0)}">${pct(totOM/totRev||0)}</div>
-      </div>
-      <div class="sim-card">
-        <div class="sim-card-label">시뮬레이션 OM율</div>
-        <div class="sim-card-val" id="sim-new-omp" style="color:${colorOf(totOM/totRev||0)}">${pct(totOM/totRev||0)}</div>
+      <div style="background:var(--surface2);border-radius:8px;padding:12px">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">현재 영업이익 (OM)</div>
+        <div style="font-family:'DM Mono',monospace;font-size:16px;color:${colorOf(totOM)}">${fmtM(totOM)}</div>
+        <div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px">
+          OM율 ${pct(omP)}
+        </div>
       </div>
     </div>
-    <div style="font-size:10px;color:var(--text3);margin-top:10px;font-family:'DM Mono',monospace">
-      기준: ${activePeriod} 전체 채널 합산
+    <div style="background:var(--surface2);border-radius:8px;padding:14px">
+      <div style="font-size:11px;color:var(--text2);margin-bottom:10px">광고비를 이 금액으로 집행한다면?</div>
+      <div class="sim-row">
+        <span class="sim-label" style="font-size:12px">광고비 입력 (만원)</span>
+        <input type="number" id="sim-adv-input" placeholder="${Math.round(totAdv/10000)}"
+          style="width:110px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:6px 10px;text-align:right"
+          oninput="updateAdvSim(this.value, ${totRev}, ${totAdv}, ${totOM})">
+        <span style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">만원</span>
+      </div>
+      <div class="sim-result" style="margin-top:12px">
+        <div class="sim-card">
+          <div class="sim-card-label">광고비 증감</div>
+          <div class="sim-card-val" id="sim-adv-delta" style="color:var(--text3)">—</div>
+        </div>
+        <div class="sim-card">
+          <div class="sim-card-label">예상 OM</div>
+          <div class="sim-card-val" id="sim-new-om" style="color:var(--text3)">—</div>
+        </div>
+        <div class="sim-card">
+          <div class="sim-card-label">OM 증감</div>
+          <div class="sim-card-val" id="sim-om-delta" style="color:var(--text3)">—</div>
+        </div>
+        <div class="sim-card">
+          <div class="sim-card-label">예상 OM율</div>
+          <div class="sim-card-val" id="sim-new-omp" style="color:var(--text3)">—</div>
+        </div>
+      </div>
     </div>
   </div>`;
 }
 
-let simAdj = {adv:0, logi:0, rev:0};
-function updateSim(val, type) {
-  simAdj[type] = parseInt(val);
-  document.getElementById(`sim-${type}-val`).textContent =
-    (val >= 0 ? '+' : '') + val + '%';
-  const chs = activeGrp==='ALL' ? CHANNELS
-    : GROUPS.includes(activeGrp) ? CHANNELS.filter(d=>d.grp===activeGrp)
-    : CHANNELS.filter(d=>d.ch===activeGrp);
-  const totRev = chs.reduce((s,d)=>s+d.rev,0);
-  const totOM  = chs.reduce((s,d)=>s+d.om,0);
-  const newOM = chs.reduce((s,d) => {
-    const newRev  = d.rev  * (1 + simAdj.rev/100);
-    const newAdv  = d.adv  * (1 + simAdj.adv/100);
-    const newLogi = d.logi * (1 + simAdj.logi/100);
-    const delta = (newRev - d.rev) - (newAdv - d.adv) - (newLogi - d.logi);
-    return s + d.om + delta;
-  }, 0);
-  const newRev = totRev * (1 + simAdj.rev/100);
-  document.getElementById('sim-new-om').textContent = fmtM(newOM);
-  document.getElementById('sim-new-om').style.color = colorOf(newOM);
-  document.getElementById('sim-new-omp').textContent = pct(newRev ? newOM/newRev : 0);
-  document.getElementById('sim-new-omp').style.color = colorOf(newRev ? newOM/newRev : 0);
+function updateAdvSim(inputVal, totRev, totAdv, totOM) {
+  const newAdv = parseFloat(inputVal) * 10000;
+  if (isNaN(newAdv) || inputVal === '') {
+    ['sim-adv-delta','sim-new-om','sim-om-delta','sim-new-omp'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = '—'; el.style.color = 'var(--text3)'; }
+    });
+    return;
+  }
+  const advDelta = newAdv - totAdv;         // 광고비 증감 (음수 = 절감)
+  const newOM    = totOM - advDelta;         // OM = 광고비 줄면 OM 증가
+  const omDelta  = newOM - totOM;
+  const newOMP   = totRev ? newOM / totRev : 0;
+
+  const advEl = document.getElementById('sim-adv-delta');
+  const omEl  = document.getElementById('sim-new-om');
+  const dEl   = document.getElementById('sim-om-delta');
+  const pEl   = document.getElementById('sim-new-omp');
+
+  if (advEl) { advEl.textContent = (advDelta>=0?'+':'')+fmtM(advDelta); advEl.style.color = colorOf(-advDelta); }
+  if (omEl)  { omEl.textContent  = fmtM(newOM);  omEl.style.color  = colorOf(newOM); }
+  if (dEl)   { dEl.textContent   = (omDelta>=0?'+':'')+fmtM(omDelta); dEl.style.color = colorOf(omDelta); }
+  if (pEl)   { pEl.textContent   = pct(newOMP);  pEl.style.color   = colorOf(newOMP); }
 }
 
 // ── PDF EXPORT ────────────────────────────────────────────────
@@ -952,24 +971,7 @@ function exportPDF() {
   window.print();
 }
 
-// ── GOAL BAR HTML ─────────────────────────────────────────────
-function goalSection(d) {
-  const id = d.ch.replace(/[^a-zA-Z0-9]/g,'_');
-  const goal = getGoal(d.ch);
-  const pctVal = goal > 0 ? Math.min(150, d.rev/goal*100) : 0;
-  const barCol = pctVal >= 100 ? 'var(--pos)' : pctVal >= 70 ? 'var(--warn2)' : 'var(--neg)';
-  return `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-      <span style="font-size:11px;color:var(--text2)">월 목표 (만원)</span>
-      <input class="goal-input" type="number" placeholder="0"
-        value="${goal ? Math.round(goal/10000) : ''}"
-        onchange="setGoal('${d.ch}', this.value*10000); renderContent()"
-        id="goal-${id}">
-      ${goal > 0 ? `<span class="goal-pct" style="color:${barCol}">${pctVal.toFixed(0)}% 달성</span>` : ''}
-    </div>
-    ${goal > 0 ? `<div class="goal-bar"><div class="goal-bar-fill" style="width:${Math.min(100,pctVal)}%;background:${barCol}"></div></div>` : ''}
-  </div>`;
-}
+// (목표 달성률 기능 제거됨 v2.1)
 
 // ── INIT ──────────────────────────────────────────────────────
 loadData();
@@ -985,18 +987,31 @@ loadData();
 
     <div class="cl-entry">
       <div class="cl-ver">
+        <span class="cl-badge minor">v2.1</span>
+        <span class="cl-date">2026-06-10</span>
+      </div>
+      <ul class="cl-items">
+        <li>MoM 배지 적용 기준 개선 — 5월부터 적용, 1Q·4월 제외</li>
+        <li>분기 소계 MoM → 직전 분기 소계와 비교 (2Q比·3Q比·4Q比)</li>
+        <li>광고비 시뮬레이터 개편 — 금액 직접 입력 → 예상 OM 즉시 계산</li>
+        <li>물류비 슬라이더 제거 (B2C 종속 비용으로 조정 실효성 없음)</li>
+        <li class="fix">목표 달성률 바 제거 (가독성·실효성 문제)</li>
+      </ul>
+    </div>
+
+    <div class="cl-entry">
+      <div class="cl-ver">
         <span class="cl-badge major">v2.0</span>
         <span class="cl-date">2026-06-08</span>
       </div>
       <ul class="cl-items">
         <li class="new">구글 시트 실시간 연동 (Apps Script JSONP)</li>
         <li class="new">월별 필터 — 1Q~4Q소계, 4월~12월 전환</li>
-        <li class="new">채널 목표 대비 달성률 바 (Goal Tracker)</li>
         <li class="new">전월 대비 증감 표시 (MoM 배지)</li>
         <li class="new">OM 경보 시스템 (-15% 이하 채널 자동 강조)</li>
         <li class="new">브랜드별 통합 수익성 요약 카드</li>
         <li class="new">채널 수익성 매트릭스 (버블차트)</li>
-        <li class="new">손익분기 시뮬레이터 (슬라이더)</li>
+        <li class="new">손익분기 시뮬레이터</li>
         <li class="new">채널별 메모 기능 (로컬 저장)</li>
         <li class="new">PDF 내보내기</li>
         <li class="new">업데이트 로그 패널</li>
