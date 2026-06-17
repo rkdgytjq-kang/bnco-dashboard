@@ -16,15 +16,15 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 14px; min-height: 100vh; overflow-x: hidden; }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
 
   /* HEADER */
   .header { position: sticky; top: 0; z-index: 100; background: rgba(12,15,20,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .header-left { display: flex; align-items: baseline; gap: 14px; }
-  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 3px; color: var(--accent); }
-  .period { font-size: 12px; color: var(--text2); background: var(--surface2); border: 1px solid var(--border2); padding: 3px 10px; border-radius: 20px; font-family: 'DM Mono', monospace; }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 3px; color: var(--accent); }
+  .period { font-size: 14px; color: var(--text2); background: var(--surface2); border: 1px solid var(--border2); padding: 3px 10px; border-radius: 20px; font-family: 'DM Mono', monospace; }
   .header-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .badge { font-size: 11px; font-family: 'DM Mono', monospace; padding: 4px 10px; border-radius: 4px; border: 1px solid; letter-spacing: 0.5px; }
+  .badge { font-size: 13px; font-family: 'DM Mono', monospace; padding: 4px 10px; border-radius: 4px; border: 1px solid; letter-spacing: 0.5px; }
   .badge-conf { color: var(--warn2); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.06); }
   .badge-live { color: var(--pos); border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.06); cursor: pointer; }
   .badge-live:hover { background: rgba(52,211,153,0.12); }
@@ -33,7 +33,7 @@
   .month-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 8px 28px; display: flex; gap: 6px; overflow-x: auto; flex-wrap: nowrap; }
   .month-bar::-webkit-scrollbar { height: 3px; }
   .month-bar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-  .m-btn { font-size: 12px; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: 'DM Mono', monospace; white-space: nowrap; transition: all 0.15s; }
+  .m-btn { font-size: 14px; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: 'DM Mono', monospace; white-space: nowrap; transition: all 0.15s; }
   .m-btn:hover { border-color: var(--border2); color: var(--text); }
   .m-btn.active { background: rgba(79,142,247,0.12); border-color: rgba(79,142,247,0.4); color: var(--accent); }
   .m-btn.qsum { border-style: dashed; }
@@ -46,21 +46,21 @@
   .content { padding: 28px 32px; overflow-y: auto; }
 
   /* SIDEBAR NAV */
-  .nav-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); padding: 12px 20px 4px; font-family: 'DM Mono', monospace; }
+  .nav-label { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); padding: 12px 20px 4px; font-family: 'DM Mono', monospace; }
   .nav-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 20px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; color: var(--text2); }
   .nav-item:hover { background: var(--surface2); color: var(--text); border-left-color: var(--border2); }
   .nav-item.active { background: rgba(79,142,247,0.08); color: var(--accent); border-left-color: var(--accent); }
-  .nav-item-name { font-size: 13px; }
-  .nav-om { font-family: 'DM Mono', monospace; font-size: 11px; padding: 1px 6px; border-radius: 3px; min-width: 52px; text-align: right; }
+  .nav-item-name { font-size: 15px; }
+  .nav-om { font-family: 'DM Mono', monospace; font-size: 13px; padding: 1px 6px; border-radius: 3px; min-width: 52px; text-align: right; }
   .om-pos { color: var(--pos); background: rgba(52,211,153,0.1); }
   .om-neg { color: var(--neg); background: rgba(248,113,113,0.1); }
   .om-neu { color: var(--warn2); background: rgba(251,191,36,0.1); }
   .nav-group-btn { display: flex; align-items: center; gap: 8px; padding: 10px 20px; cursor: pointer; color: var(--text2); transition: all 0.15s; }
   .nav-group-btn:hover { color: var(--text); }
   .nav-group-btn.open { color: var(--text); }
-  .nav-group-arrow { font-size: 11px; transition: transform 0.2s; }
+  .nav-group-arrow { font-size: 13px; transition: transform 0.2s; }
   .nav-group-btn.open .nav-group-arrow { transform: rotate(90deg); }
-  .nav-group-title { font-size: 12px; font-weight: 500; letter-spacing: 0.5px; }
+  .nav-group-title { font-size: 14px; font-weight: 500; letter-spacing: 0.5px; }
   .nav-children { display: none; }
   .nav-children.open { display: block; }
 
@@ -68,28 +68,28 @@
   .summary-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px; }
   .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; position: relative; overflow: hidden; }
   .summary-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); opacity: 0.6; }
-  .sc-label { font-size: 11px; color: var(--text2); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
-  .sc-value { font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 500; }
-  .sc-sub { font-size: 12px; color: var(--text2); margin-top: 4px; font-family: 'DM Mono', monospace; }
+  .sc-label { font-size: 13px; color: var(--text2); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
+  .sc-value { font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 500; }
+  .sc-sub { font-size: 14px; color: var(--text2); margin-top: 4px; font-family: 'DM Mono', monospace; }
 
   /* CHANNEL CARDS */
   .section-title { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-  .section-title h2 { font-size: 15px; font-weight: 500; }
-  .stag { font-size: 11px; font-family: 'DM Mono', monospace; letter-spacing: 1px; color: var(--accent); background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.2); padding: 2px 8px; border-radius: 3px; }
+  .section-title h2 { font-size: 17px; font-weight: 500; }
+  .stag { font-size: 13px; font-family: 'DM Mono', monospace; letter-spacing: 1px; color: var(--accent); background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.2); padding: 2px 8px; border-radius: 3px; }
   .divider { flex: 1; height: 1px; background: var(--border); }
   .col-header { display: grid; grid-template-columns: 1fr repeat(4,140px); padding: 6px 20px 10px; gap: 8px; }
-  .col-h { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); text-align: right; font-family: 'DM Mono', monospace; }
+  .col-h { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); text-align: right; font-family: 'DM Mono', monospace; }
   .col-h:first-child { text-align: left; }
 
   .channel-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 16px; transition: border-color 0.2s; }
   .channel-card:hover { border-color: var(--border2); }
   .channel-header { display: grid; grid-template-columns: 1fr repeat(4,140px); align-items: center; padding: 14px 20px; cursor: pointer; gap: 8px; }
   .channel-name-wrap { display: flex; align-items: center; gap: 10px; }
-  .ch-brand { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text3); background: var(--surface2); padding: 2px 6px; border-radius: 3px; }
-  .ch-name { font-size: 14px; font-weight: 500; }
+  .ch-brand { font-size: 13px; font-family: 'DM Mono', monospace; color: var(--text3); background: var(--surface2); padding: 2px 6px; border-radius: 3px; }
+  .ch-name { font-size: 16px; font-weight: 500; }
   .metric-col { text-align: right; }
-  .metric-main { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; }
-  .metric-pct { font-size: 11px; font-family: 'DM Mono', monospace; margin-top: 2px; }
+  .metric-main { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500; }
+  .metric-pct { font-size: 13px; font-family: 'DM Mono', monospace; margin-top: 2px; }
   .bar-wrap { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
   .bar-track { flex: 1; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
   .bar-fill { height: 100%; border-radius: 2px; }
@@ -100,10 +100,10 @@
   .detail-panel { display: none; border-top: 1px solid var(--border); background: rgba(255,255,255,0.015); padding: 20px; }
   .detail-panel.open { display: block; }
   .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .detail-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 10px; font-family: 'DM Mono', monospace; }
+  .detail-section-title { font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 10px; font-family: 'DM Mono', monospace; }
   .waterfall { display: flex; flex-direction: column; gap: 4px; }
   .wf-row { display: flex; align-items: center; gap: 10px; }
-  .wf-label { font-size: 12px; color: var(--text2); width: 130px; flex-shrink: 0; }
+  .wf-label { font-size: 14px; color: var(--text2); width: 130px; flex-shrink: 0; }
   .wf-bar-area { flex: 1; display: flex; align-items: center; position: relative; height: 20px; }
   .wf-bar { height: 14px; border-radius: 2px; position: absolute; min-width: 2px; }
   .wf-bar.revenue { background: rgba(79,142,247,0.6); }
@@ -116,31 +116,31 @@
   .wf-bar.ci { background: rgba(52,211,153,0.45); }
   .wf-bar.om-pos { background: rgba(52,211,153,0.8); }
   .wf-bar.om-neg { background: rgba(248,113,113,0.8); }
-  .wf-value { font-family: 'DM Mono', monospace; font-size: 11px; width: 80px; text-align: right; flex-shrink: 0; }
+  .wf-value { font-family: 'DM Mono', monospace; font-size: 13px; width: 80px; text-align: right; flex-shrink: 0; }
   .wf-divider { border: none; border-top: 1px dashed var(--border2); margin: 2px 0; }
   .indirect-box { background: var(--surface2); border-radius: 8px; padding: 14px 16px; }
   .indirect-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--border); }
   .indirect-row:last-child { border: none; }
-  .indirect-key { font-size: 12px; color: var(--text2); }
-  .indirect-val { font-family: 'DM Mono', monospace; font-size: 12px; }
+  .indirect-key { font-size: 14px; color: var(--text2); }
+  .indirect-val { font-family: 'DM Mono', monospace; font-size: 14px; }
 
   /* TABLE */
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; }
-  th { background: var(--surface2); font-size: 11px; font-weight: 500; color: var(--text2); text-align: right; padding: 8px 12px; white-space: nowrap; position: sticky; top: 0; border-bottom: 1px solid var(--border2); }
+  th { background: var(--surface2); font-size: 13px; font-weight: 500; color: var(--text2); text-align: right; padding: 8px 12px; white-space: nowrap; position: sticky; top: 0; border-bottom: 1px solid var(--border2); }
   th:first-child, th:nth-child(2) { text-align: left; }
-  td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: 12px; text-align: right; white-space: nowrap; }
-  td:first-child { font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text2); }
-  td:nth-child(2) { font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 500; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: 14px; text-align: right; white-space: nowrap; }
+  td:first-child { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: var(--text2); }
+  td:nth-child(2) { font-family: 'Noto Sans KR', sans-serif; font-size: 15px; font-weight: 500; text-align: left; }
   tr:hover td { background: rgba(255,255,255,0.02); }
   tfoot td { background: var(--surface2); font-weight: 600; border-top: 1px solid var(--border2); }
 
   /* VIEW TOGGLE */
   .view-toggle { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px; width: fit-content; }
-  .view-btn { font-size: 12px; padding: 6px 14px; border-radius: 5px; border: none; cursor: pointer; background: transparent; color: var(--text2); font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
+  .view-btn { font-size: 14px; padding: 6px 14px; border-radius: 5px; border: none; cursor: pointer; background: transparent; color: var(--text2); font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
   .view-btn.active { background: var(--surface2); color: var(--text); border: 1px solid var(--border2); }
   .filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-  .filter-btn { font-size: 12px; padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
+  .filter-btn { font-size: 14px; padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
   .filter-btn:hover { border-color: var(--border2); color: var(--text); }
   .filter-btn.active { background: rgba(79,142,247,0.12); border-color: rgba(79,142,247,0.4); color: var(--accent); }
 
@@ -148,11 +148,11 @@
   .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; gap: 16px; }
   .spinner { width: 32px; height: 32px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text2); }
+  .loading-text { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--text2); }
   .error-box { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); border-radius: 8px; padding: 20px; margin: 20px 0; }
-  .error-box p { color: var(--neg); font-size: 13px; font-family: 'DM Mono', monospace; line-height: 1.8; }
+  .error-box p { color: var(--neg); font-size: 15px; font-family: 'DM Mono', monospace; line-height: 1.8; }
 
-  .footer { margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--text3); font-size: 11px; font-family: 'DM Mono', monospace; }
+  .footer { margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--text3); font-size: 13px; font-family: 'DM Mono', monospace; }
 
   @media (max-width: 900px) {
     .main { grid-template-columns: 1fr; }
@@ -164,6 +164,19 @@
     .detail-grid { grid-template-columns: 1fr; }
   }
 
+  /* ── CHANNEL SEARCH ── */
+  .ch-search{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding:8px 12px}
+  .ch-search:focus{outline:none;border-color:var(--accent)}
+  .ch-search::placeholder{color:var(--text3)}
+  .search-result-card{margin:0 20px 16px;background:var(--surface2);border:1px solid rgba(79,142,247,0.25);border-radius:10px;padding:14px 16px}
+  .src-title{font-size:10px;color:var(--accent);letter-spacing:1px;font-family:'DM Mono',monospace;margin-bottom:8px}
+  .src-name{font-size:15px;font-weight:500;color:var(--text);margin-bottom:10px}
+  .src-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}
+  .src-key{color:var(--text2)}
+  .src-val{font-family:'DM Mono',monospace;color:var(--text)}
+  .src-empty{font-size:13px;color:var(--text3);padding:10px 4px;text-align:center}
+  .src-period-tag{display:inline-block;font-size:10px;background:var(--surface);border:1px solid var(--border2);border-radius:3px;padding:1px 6px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:8px}
+
   /* ── CHANGELOG PANEL ── */
   .cl-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;backdrop-filter:blur(4px)}
   .cl-overlay.open{display:flex;align-items:flex-start;justify-content:flex-end}
@@ -172,76 +185,76 @@
   .cl-panel::-webkit-scrollbar{width:3px}
   .cl-panel::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
   .cl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-  .cl-title{font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:1px}
-  .cl-close{background:none;border:1px solid var(--border);color:var(--text2);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+  .cl-title{font-family:'DM Mono',monospace;font-size:15px;color:var(--accent);letter-spacing:1px}
+  .cl-close{background:none;border:1px solid var(--border);color:var(--text2);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
   .cl-close:hover{border-color:var(--border2);color:var(--text)}
   .cl-entry{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)}
   .cl-entry:last-child{border:none;margin:0;padding:0}
   .cl-ver{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-  .cl-badge{font-family:'DM Mono',monospace;font-size:10px;padding:2px 8px;border-radius:3px;border:1px solid}
+  .cl-badge{font-family:'DM Mono',monospace;font-size:11px;padding:2px 8px;border-radius:3px;border:1px solid}
   .cl-badge.major{color:var(--accent);border-color:rgba(79,142,247,0.3);background:rgba(79,142,247,0.08)}
   .cl-badge.minor{color:var(--accent2);border-color:rgba(110,231,183,0.3);background:rgba(110,231,183,0.06)}
   .cl-badge.fix{color:var(--warn2);border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.06)}
-  .cl-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3)}
+  .cl-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)}
   .cl-items{list-style:none;display:flex;flex-direction:column;gap:5px}
-  .cl-items li{font-size:12px;color:var(--text2);padding-left:14px;position:relative;line-height:1.5}
+  .cl-items li{font-size:14px;color:var(--text2);padding-left:14px;position:relative;line-height:1.5}
   .cl-items li::before{content:'·';position:absolute;left:0;color:var(--accent)}
-  .cl-items li.new::before{content:'✦';color:var(--pos);font-size:9px;top:1px}
-  .cl-items li.fix::before{content:'⚙';font-size:9px;top:1px;color:var(--warn2)}
+  .cl-items li.new::before{content:'✦';color:var(--pos);font-size:10px;top:1px}
+  .cl-items li.fix::before{content:'⚙';font-size:10px;top:1px;color:var(--warn2)}
 
   /* ── GOALS (목표 입력) ── */
-  .goal-input{width:70px;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:2px 6px;text-align:right}
+  .goal-input{width:70px;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:2px 6px;text-align:right}
   .goal-input:focus{outline:none;border-color:var(--accent)}
   .goal-bar{height:4px;border-radius:2px;background:rgba(255,255,255,0.06);margin-top:4px;overflow:hidden}
   .goal-bar-fill{height:100%;border-radius:2px;transition:width 0.5s}
-  .goal-pct{font-size:10px;font-family:'DM Mono',monospace;margin-top:2px}
+  .goal-pct{font-size:11px;font-family:'DM Mono',monospace;margin-top:2px}
 
   /* ── MOM (전월 대비) ── */
-  .mom-badge{font-size:10px;font-family:'DM Mono',monospace;padding:1px 5px;border-radius:3px;margin-left:6px}
+  .mom-badge{font-size:11px;font-family:'DM Mono',monospace;padding:1px 5px;border-radius:3px;margin-left:6px}
   .mom-up{color:var(--pos);background:rgba(52,211,153,0.1)}
   .mom-dn{color:var(--neg);background:rgba(248,113,113,0.1)}
   .mom-flat{color:var(--text3);background:rgba(255,255,255,0.05)}
 
   /* ── ALERT ── */
   .ch-alert{border-color:rgba(248,113,113,0.4) !important}
-  .ch-alert .ch-name::after{content:' ⚠';color:var(--neg);font-size:11px}
+  .ch-alert .ch-name::after{content:' ⚠';color:var(--neg);font-size:13px}
 
   /* ── MATRIX VIEW ── */
   .matrix-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
   .matrix-canvas{position:relative;width:100%;height:340px}
-  .matrix-dot{position:absolute;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;font-size:9px;font-family:'DM Mono',monospace;font-weight:500;border:1px solid rgba(255,255,255,0.2)}
+  .matrix-dot{position:absolute;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;font-size:10px;font-family:'DM Mono',monospace;font-weight:500;border:1px solid rgba(255,255,255,0.2)}
   .matrix-dot:hover{z-index:10;filter:brightness(1.3);transform:translate(-50%,-50%) scale(1.15)}
-  .matrix-axis{position:absolute;font-size:10px;font-family:'DM Mono',monospace;color:var(--text3)}
+  .matrix-axis{position:absolute;font-size:11px;font-family:'DM Mono',monospace;color:var(--text3)}
   .matrix-grid{position:absolute;inset:0;pointer-events:none}
 
   /* ── SIM PANEL ── */
   .sim-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
   .sim-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-  .sim-label{font-size:12px;color:var(--text2);width:120px;flex-shrink:0}
+  .sim-label{font-size:14px;color:var(--text2);width:120px;flex-shrink:0}
   .sim-slider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border2);outline:none}
   .sim-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer}
-  .sim-val{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);width:48px;text-align:right}
+  .sim-val{font-family:'DM Mono',monospace;font-size:14px;color:var(--text);width:48px;text-align:right}
   .sim-result{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
   .sim-card{background:var(--surface2);border-radius:8px;padding:12px;text-align:center}
-  .sim-card-label{font-size:10px;color:var(--text2);margin-bottom:4px}
-  .sim-card-val{font-family:'DM Mono',monospace;font-size:16px;font-weight:500}
+  .sim-card-label{font-size:11px;color:var(--text2);margin-bottom:4px}
+  .sim-card-val{font-family:'DM Mono',monospace;font-size:18px;font-weight:500}
 
   /* ── NOTES ── */
-  .note-btn{font-size:9px;padding:1px 6px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;margin-left:8px;font-family:'DM Mono',monospace}
+  .note-btn{font-size:10px;padding:1px 6px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;margin-left:8px;font-family:'DM Mono',monospace}
   .note-btn:hover{border-color:var(--border2);color:var(--text2)}
-  .note-area{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:8px 10px;resize:vertical;min-height:60px;margin-top:8px}
+  .note-area{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding:8px 10px;resize:vertical;min-height:60px;margin-top:8px}
   .note-area:focus{outline:none;border-color:var(--accent)}
-  .note-saved{font-size:10px;color:var(--pos);font-family:'DM Mono',monospace;margin-top:4px}
+  .note-saved{font-size:11px;color:var(--pos);font-family:'DM Mono',monospace;margin-top:4px}
 
   /* ── BRAND SUMMARY ── */
   .brand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
   .brand-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
-  .brand-name{font-size:11px;font-family:'DM Mono',monospace;color:var(--text2);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase}
-  .brand-rev{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--neu)}
-  .brand-om{font-size:11px;margin-top:2px}
+  .brand-name{font-size:13px;font-family:'DM Mono',monospace;color:var(--text2);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase}
+  .brand-rev{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--neu)}
+  .brand-om{font-size:13px;margin-top:2px}
 
   /* ── EXPORT BTN ── */
-  .export-btn{font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s}
+  .export-btn{font-size:13px;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s}
   .export-btn:hover{border-color:var(--border2);color:var(--text)}
 </style>
 </head>
@@ -388,14 +401,15 @@ async function loadData() {
     });
     rawRows = data;
     parseForPeriod(activePeriod);
+    buildAllPeriodIndex();
     document.getElementById('period-label').textContent = `${activePeriod} · ${new Date().toLocaleDateString('ko-KR')} 기준`;
     render();
   } catch(e) {
     document.getElementById('content').innerHTML = `
       <div class="error-box">
         <p>⚠ 구글 시트 연결 실패: ${e.message}</p>
-        <p style="margin-top:6px;font-size:12px">Apps Script 배포 설정을 확인하세요<br>액세스: 모든 사용자 (익명 포함)</p>
-        <p style="margin-top:8px"><button onclick="loadData()" style="background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.3);color:var(--neg);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:'DM Mono',monospace;font-size:12px">다시 시도</button></p>
+        <p style="margin-top:6px;font-size:14px">Apps Script 배포 설정을 확인하세요<br>액세스: 모든 사용자 (익명 포함)</p>
+        <p style="margin-top:8px"><button onclick="loadData()" style="background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.3);color:var(--neg);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:'DM Mono',monospace;font-size:14px">다시 시도</button></p>
       </div>`;
   }
 }
@@ -467,7 +481,13 @@ function setPeriod(period, btn) {
 function buildSidebar() {
   const totRev = CHANNELS.reduce((s,d)=>s+d.rev,0);
   const totOM  = CHANNELS.reduce((s,d)=>s+d.om,0);
-  let html = `<div><div class="nav-label">개요</div>
+  let html = `
+    <div style="padding:0 20px 14px">
+      <input type="text" class="ch-search" id="ch-search-input" placeholder="채널/판매처 검색..."
+        oninput="searchChannel(this.value)" value="${searchQuery||''}">
+    </div>
+    <div id="search-result-box"></div>
+    <div><div class="nav-label">개요</div>
     <div class="nav-item ${activeGrp==='ALL'?'active':''}" onclick="setGrp('ALL')">
       <span class="nav-item-name">전체 채널</span>
       <span class="nav-om ${omc(totRev?totOM/totRev:0)}">${pct(totRev?totOM/totRev:0)}</span>
@@ -532,7 +552,7 @@ function buildSummary(chs) {
 function wfRow(label, value, cls, maxVal, indent=false) {
   const bw = maxVal>0 ? Math.min(100, Math.abs(value)/maxVal*100) : 0;
   return `<div class="wf-row">
-    <span class="wf-label" style="${indent?'padding-left:12px;font-size:11px':''}}">${label}</span>
+    <span class="wf-label" style="${indent?'padding-left:12px;font-size:13px':''}}">${label}</span>
     <div class="wf-bar-area">
       <div class="wf-bar ${cls}" style="width:${bw}%;left:${value>=0?0:100-bw}%"></div>
     </div>
@@ -552,7 +572,7 @@ function buildCard(d, maxRev) {
       <div class="channel-name-wrap"><div>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
           <span class="ch-brand">${d.brand}</span>
-          <span style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">${d.country}</span>
+          <span style="font-size:13px;color:var(--text3);font-family:'DM Mono',monospace">${d.country}</span>
         </div>
         <div style="display:flex;align-items:center">
           <span class="ch-name">${d.ch}</span>
@@ -614,7 +634,7 @@ function buildCard(d, maxRev) {
             <div class="indirect-row"><span class="indirect-key">직접비 합계</span><span class="indirect-val" style="color:var(--neg)">- ${fmt(d.direct)}</span></div>
             <div class="indirect-row"><span class="indirect-key">CI율</span><span class="indirect-val" style="color:${colorOf(d.ci_pct)}">${pct(d.ci_pct)}</span></div>
             <div class="indirect-row"><span class="indirect-key" style="color:var(--text)">OM율</span>
-              <span class="indirect-val" style="color:${colorOf(d.om_pct)};font-size:14px">${pct(d.om_pct)}</span></div>
+              <span class="indirect-val" style="color:${colorOf(d.om_pct)};font-size:16px">${pct(d.om_pct)}</span></div>
           </div>
         </div>
       </div>
@@ -626,7 +646,7 @@ function buildCard(d, maxRev) {
           <textarea class="note-area" id="note-${d.ch.replace(/[^a-zA-Z0-9]/g,'_')}"
             placeholder="이 채널에 대한 메모를 입력하세요...">${getNote(d.ch)}</textarea>
           <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
-            <button onclick="saveNote('${d.ch}')" style="font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer">저장</button>
+            <button onclick="saveNote('${d.ch}')" style="font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer">저장</button>
             <span id="note-saved-${d.ch.replace(/[^a-zA-Z0-9]/g,'_')}" class="note-saved" style="display:none">✓ 저장됨</span>
           </div>
         </div>
@@ -699,7 +719,7 @@ function renderContent() {
         body += `<div style="margin-bottom:28px">
           <div class="section-title">
             <h2>${grp}</h2><span class="stag">SEGMENT</span>
-            <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text2)">OM ${pct(gR?gO/gR:0)} · ${gc.length}채널</span>
+            <span style="font-size:14px;font-family:'DM Mono',monospace;color:var(--text2)">OM ${pct(gR?gO/gR:0)} · ${gc.length}채널</span>
             <div class="divider"></div>
           </div>
           <div class="col-header">
@@ -746,6 +766,61 @@ function toggleCard(ch) {
   renderContent();
 }
 
+
+// ── CHANNEL SEARCH (전체 기간 누적 데이터) ───────────────────
+let searchQuery = '';
+let ALL_PERIOD_DATA = {};   // ch명 → {기간: {rev,gp,ci,om,...}}
+
+function buildAllPeriodIndex() {
+  ALL_PERIOD_DATA = {};
+  const savedPeriod = activePeriod;
+  Object.keys(PERIOD_COL).forEach(period => {
+    activePeriod = period;
+    parseForPeriod(period);
+    CHANNELS.forEach(d => {
+      if (!ALL_PERIOD_DATA[d.ch]) ALL_PERIOD_DATA[d.ch] = { grp:d.grp, brand:d.brand, country:d.country, byPeriod:{} };
+      ALL_PERIOD_DATA[d.ch].byPeriod[period] = { rev:d.rev, gp:d.gp, ci:d.ci, om:d.om, adv:d.adv };
+    });
+  });
+  activePeriod = savedPeriod;
+  parseForPeriod(savedPeriod);
+}
+
+function searchChannel(q) {
+  searchQuery = q;
+  const box = document.getElementById('search-result-box');
+  if (!box) return;
+  if (!q || q.trim().length < 1) { box.innerHTML = ''; return; }
+
+  const qLower = q.trim().toLowerCase();
+  const matches = Object.keys(ALL_PERIOD_DATA).filter(ch => ch.toLowerCase().includes(qLower));
+
+  if (!matches.length) {
+    box.innerHTML = `<div class="search-result-card"><div class="src-empty">"${q}" 검색 결과 없음</div></div>`;
+    return;
+  }
+
+  box.innerHTML = matches.slice(0,5).map(ch => {
+    const info = ALL_PERIOD_DATA[ch];
+    // 연간 누적 (4Q소계 = 연간 합계, 없으면 분기 합산)
+    const annual = info.byPeriod['4Q소계'];
+    const q1 = info.byPeriod['1Q합계'] || {rev:0,gp:0,ci:0,om:0,adv:0};
+    const totalRev = (annual?.rev||0) + (q1.rev||0);
+    const totalOM  = (annual?.om||0) + (q1.om||0);
+    const totalAdv = (annual?.adv||0) + (q1.adv||0);
+    const omP = totalRev ? totalOM/totalRev : 0;
+
+    return `<div class="search-result-card" onclick="setGrp('${ch}')" style="cursor:pointer">
+      <div class="src-period-tag">연간 누적 (1Q~4Q)</div>
+      <div class="src-name">${ch} <span style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">${info.brand}</span></div>
+      <div class="src-row"><span class="src-key">누적 매출액</span><span class="src-val" style="color:var(--neu)">${fmtM(totalRev)}</span></div>
+      <div class="src-row"><span class="src-key">누적 영업이익</span><span class="src-val" style="color:${colorOf(totalOM)}">${fmtM(totalOM)}</span></div>
+      <div class="src-row"><span class="src-key">누적 OM율</span><span class="src-val" style="color:${colorOf(omP)}">${pct(omP)}</span></div>
+      <div class="src-row"><span class="src-key">누적 광고비</span><span class="src-val" style="color:var(--neg)">${fmtM(totalAdv)}</span></div>
+      <div style="margin-top:8px;font-size:11px;color:var(--accent);text-align:right">클릭하여 상세 보기 →</div>
+    </div>`;
+  }).join('');
+}
 
 // ── CHANGELOG ────────────────────────────────────────────────
 function openChangelog() {
@@ -870,8 +945,8 @@ function buildMatrix(chs) {
 
   return `<div class="matrix-wrap">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div style="font-size:12px;font-weight:500">채널 수익성 매트릭스</div>
-      <div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">X: 매출액 · Y: OM율 · 크기: CI</div>
+      <div style="font-size:14px;font-weight:500">채널 수익성 매트릭스</div>
+      <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">X: 매출액 · Y: OM율 · 크기: CI</div>
     </div>
     <div class="matrix-canvas">
       <div style="position:absolute;left:0;top:0;bottom:20px;width:1px;background:var(--border2)"></div>
@@ -889,48 +964,57 @@ function buildSimulator(chs) {
   const totAdv = chs.reduce((s,d)=>s+d.adv,0);
   const totOM  = chs.reduce((s,d)=>s+d.om,0);
   const omP    = totRev ? totOM/totRev : 0;
+  const roas   = totAdv ? totRev/totAdv : 0;          // 매출/광고비
+  const roi    = totAdv ? (totRev-totAdv)/totAdv : 0;  // (매출-광고비)/광고비
+
   return `<div class="sim-panel">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <div style="font-size:13px;font-weight:500">광고비 시뮬레이터</div>
-      <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">${activePeriod} 기준</div>
+      <div style="font-size:15px;font-weight:500">광고 효율 · 매출 예측 시뮬레이터</div>
+      <div style="font-size:13px;color:var(--text3);font-family:'DM Mono',monospace">${activePeriod} 기준</div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-      <div style="background:var(--surface2);border-radius:8px;padding:12px">
-        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">현재 광고비 합산</div>
-        <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--neg)">${fmtM(totAdv)}</div>
-        <div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px">
-          매출 대비 ${pct(totRev?totAdv/totRev:0)}
-        </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+      <div style="background:var(--surface2);border-radius:8px;padding:11px">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:4px">광고비</div>
+        <div style="font-family:'DM Mono',monospace;font-size:17px;color:var(--neg)">${fmtM(totAdv)}</div>
       </div>
-      <div style="background:var(--surface2);border-radius:8px;padding:12px">
-        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">현재 영업이익 (OM)</div>
-        <div style="font-family:'DM Mono',monospace;font-size:16px;color:${colorOf(totOM)}">${fmtM(totOM)}</div>
-        <div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px">
-          OM율 ${pct(omP)}
-        </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:11px">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:4px">매출액</div>
+        <div style="font-family:'DM Mono',monospace;font-size:17px;color:var(--neu)">${fmtM(totRev)}</div>
+      </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:11px">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:4px">ROAS</div>
+        <div style="font-family:'DM Mono',monospace;font-size:17px;color:${roas>=3?'var(--pos)':roas>=1?'var(--warn2)':'var(--neg)'}">${roas.toFixed(2)}x</div>
+      </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:11px">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:4px">ROI</div>
+        <div style="font-family:'DM Mono',monospace;font-size:17px;color:${colorOf(roi)}">${pct(roi)}</div>
       </div>
     </div>
+
     <div style="background:var(--surface2);border-radius:8px;padding:14px">
-      <div style="font-size:11px;color:var(--text2);margin-bottom:10px">광고비를 이 금액으로 집행한다면?</div>
-      <div class="sim-row">
-        <span class="sim-label" style="font-size:12px">광고비 입력 (만원)</span>
-        <input type="number" id="sim-adv-input" placeholder="${Math.round(totAdv/10000)}"
-          style="width:110px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:6px 10px;text-align:right"
-          oninput="updateAdvSim(this.value, ${totRev}, ${totAdv}, ${totOM})">
-        <span style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">만원</span>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:4px">광고비를 추가로 이만큼 늘리거나 줄인다면?</div>
+      <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:10px">
+        현재 ROAS(${roas.toFixed(2)}x) 유지를 가정 — 과거 효율이 그대로 유지된다는 전제의 추정치입니다
       </div>
-      <div class="sim-result" style="margin-top:12px">
+      <div class="sim-row">
+        <span class="sim-label" style="font-size:14px">광고비 증감 (만원)</span>
+        <input type="number" id="sim-adv-input" placeholder="예: +500 또는 -300"
+          style="width:130px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:15px;padding:6px 10px;text-align:right"
+          oninput="updateAdvSim(this.value, ${totRev}, ${totAdv}, ${totOM}, ${roas})">
+        <span style="font-size:13px;color:var(--text3);font-family:'DM Mono',monospace">만원</span>
+      </div>
+      <div class="sim-result" style="margin-top:12px;grid-template-columns:repeat(4,1fr)">
         <div class="sim-card">
-          <div class="sim-card-label">광고비 증감</div>
-          <div class="sim-card-val" id="sim-adv-delta" style="color:var(--text3)">—</div>
+          <div class="sim-card-label">예상 매출 증감</div>
+          <div class="sim-card-val" id="sim-rev-delta" style="color:var(--text3)">—</div>
+        </div>
+        <div class="sim-card">
+          <div class="sim-card-label">예상 매출액</div>
+          <div class="sim-card-val" id="sim-new-rev" style="color:var(--text3)">—</div>
         </div>
         <div class="sim-card">
           <div class="sim-card-label">예상 OM</div>
           <div class="sim-card-val" id="sim-new-om" style="color:var(--text3)">—</div>
-        </div>
-        <div class="sim-card">
-          <div class="sim-card-label">OM 증감</div>
-          <div class="sim-card-val" id="sim-om-delta" style="color:var(--text3)">—</div>
         </div>
         <div class="sim-card">
           <div class="sim-card-label">예상 OM율</div>
@@ -941,29 +1025,25 @@ function buildSimulator(chs) {
   </div>`;
 }
 
-function updateAdvSim(inputVal, totRev, totAdv, totOM) {
-  const newAdv = parseFloat(inputVal) * 10000;
-  if (isNaN(newAdv) || inputVal === '') {
-    ['sim-adv-delta','sim-new-om','sim-om-delta','sim-new-omp'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) { el.textContent = '—'; el.style.color = 'var(--text3)'; }
-    });
+function updateAdvSim(inputVal, totRev, totAdv, totOM, roas) {
+  const ids = ['sim-rev-delta','sim-new-rev','sim-new-om','sim-new-omp'];
+  if (inputVal === '' || isNaN(parseFloat(inputVal))) {
+    ids.forEach(id => { const el=document.getElementById(id); if(el){el.textContent='—'; el.style.color='var(--text3)';} });
     return;
   }
-  const advDelta = newAdv - totAdv;         // 광고비 증감 (음수 = 절감)
-  const newOM    = totOM - advDelta;         // OM = 광고비 줄면 OM 증가
-  const omDelta  = newOM - totOM;
-  const newOMP   = totRev ? newOM / totRev : 0;
+  const advDelta  = parseFloat(inputVal) * 10000;       // 광고비 증감액
+  const revDelta  = advDelta * roas;                     // ROAS 기준 예상 매출 증감
+  const newRev    = totRev + revDelta;
+  const newAdv    = totAdv + advDelta;
+  // OM = 매출증감 - 광고비증감 (다른 비용은 매출 증감분에 비례하지 않는다고 가정, 보수적 추정)
+  const newOM     = totOM + revDelta - advDelta;
+  const newOMP    = newRev ? newOM / newRev : 0;
 
-  const advEl = document.getElementById('sim-adv-delta');
-  const omEl  = document.getElementById('sim-new-om');
-  const dEl   = document.getElementById('sim-om-delta');
-  const pEl   = document.getElementById('sim-new-omp');
-
-  if (advEl) { advEl.textContent = (advDelta>=0?'+':'')+fmtM(advDelta); advEl.style.color = colorOf(-advDelta); }
-  if (omEl)  { omEl.textContent  = fmtM(newOM);  omEl.style.color  = colorOf(newOM); }
-  if (dEl)   { dEl.textContent   = (omDelta>=0?'+':'')+fmtM(omDelta); dEl.style.color = colorOf(omDelta); }
-  if (pEl)   { pEl.textContent   = pct(newOMP);  pEl.style.color   = colorOf(newOMP); }
+  const set = (id, text, color) => { const el=document.getElementById(id); if(el){el.textContent=text; el.style.color=color;} };
+  set('sim-rev-delta', (revDelta>=0?'+':'')+fmtM(revDelta), colorOf(revDelta));
+  set('sim-new-rev',   fmtM(newRev), 'var(--neu)');
+  set('sim-new-om',    fmtM(newOM),  colorOf(newOM));
+  set('sim-new-omp',   pct(newOMP),  colorOf(newOMP));
 }
 
 // ── PDF EXPORT ────────────────────────────────────────────────
@@ -987,14 +1067,25 @@ loadData();
 
     <div class="cl-entry">
       <div class="cl-ver">
+        <span class="cl-badge minor">v2.2</span>
+        <span class="cl-date">2026-06-11</span>
+      </div>
+      <ul class="cl-items">
+        <li class="new">채널/판매처 검색 — 사이드바에서 검색 시 전체 기간 누적 데이터 표시</li>
+        <li class="new">검색 결과 카드 클릭 시 해당 채널 상세로 즉시 이동</li>
+        <li class="fix">시뮬레이터 ROAS·ROI 기준으로 전면 개편 — 광고비 증감 입력 시 ROAS 기준 예상 매출까지 함께 계산</li>
+        <li>전체 폰트 사이즈 1~2px 확대 (가독성 추가 개선)</li>
+      </ul>
+    </div>
+
+    <div class="cl-entry">
+      <div class="cl-ver">
         <span class="cl-badge minor">v2.1</span>
         <span class="cl-date">2026-06-10</span>
       </div>
       <ul class="cl-items">
         <li>MoM 배지 적용 기준 개선 — 5월부터 적용, 1Q·4월 제외</li>
         <li>분기 소계 MoM → 직전 분기 소계와 비교 (2Q比·3Q比·4Q比)</li>
-        <li>광고비 시뮬레이터 개편 — 금액 직접 입력 → 예상 OM 즉시 계산</li>
-        <li>물류비 슬라이더 제거 (B2C 종속 비용으로 조정 실효성 없음)</li>
         <li class="fix">목표 달성률 바 제거 (가독성·실효성 문제)</li>
       </ul>
     </div>
@@ -1046,9 +1137,9 @@ loadData();
     </div>
 
     <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-      <div style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:8px">SYSTEM</div>
-      <div style="font-size:11px;color:var(--text2);line-height:1.8">
-        시트 ID: <span style="color:var(--text);font-family:'DM Mono',monospace;font-size:10px">1ixpBV1Yql...d1c</span><br>
+      <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:8px">SYSTEM</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8">
+        시트 ID: <span style="color:var(--text);font-family:'DM Mono',monospace;font-size:11px">1ixpBV1Yql...d1c</span><br>
         탭: <span style="color:var(--text)">채널별_손익</span><br>
         데이터 소스: <span style="color:var(--text)">Apps Script JSONP</span><br>
         호스팅: <span style="color:var(--text)">GitHub Pages</span>
