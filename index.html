@@ -362,6 +362,7 @@ let activeGrp    = 'ALL';
 let openCards    = new Set();
 let viewMode     = 'cards';
 let selectedBrandFilter = null;
+let CHANNEL_BRAND_MAP = {};
 
 // ── 유틸 ──────────────────────────────────────────────────────
 const n  = v => { const x = parseFloat(v); return isNaN(x) ? 0 : x; };
@@ -403,7 +404,7 @@ async function loadData() {
   document.getElementById('content').innerHTML = `<div class="loading"><div class="spinner"></div><div class="loading-text">구글 시트 데이터 로딩 중...</div></div>`;
   document.getElementById('sidebar').innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
 
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2lZFx1126omNkGRGT6Y6bMPoDC49yJfZW3cftiowoI3geEhAJL9sfrmQKNKpRAKCeCA/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzULELzBCvoF3jmiptu2a6MdyL38KkxEWfE9ZPi_ijM7aVxqW2UuwyTBBI-KTZYauD3XA/exec';
 
   try {
     // JSONP 방식으로 CORS 우회
@@ -425,7 +426,13 @@ async function loadData() {
       script.onerror = () => { clearTimeout(timer); reject(new Error('script load failed')); };
       document.body.appendChild(script);
     });
-    rawRows = data;
+    if (data && data.rows) {
+      rawRows = data.rows;
+      CHANNEL_BRAND_MAP = data.brandMap || {};
+    } else {
+      rawRows = data;
+      CHANNEL_BRAND_MAP = {};
+    }
     parseForPeriod(activePeriod);
     buildAllPeriodIndex();
     document.getElementById('period-label').textContent = `${activePeriod} · ${new Date().toLocaleDateString('ko-KR')} 기준`;
@@ -932,34 +939,48 @@ function momBadge(ch, field) {
 }
 
 // ── BRAND SUMMARY ─────────────────────────────────────────────
+// 자체 브랜드 고정 목록 — 이 외는 모두 '유통'으로 분류
+const SELF_BRANDS = ['누디크', '스피큘엑스', '더콜린'];
+function brandLabel(ch, raw) {
+  if (CHANNEL_BRAND_MAP && CHANNEL_BRAND_MAP[ch]) return CHANNEL_BRAND_MAP[ch];
+  const t = (raw || '').trim();
+  return SELF_BRANDS.includes(t) ? t : '유통';
+}
+
 function selectBrand(key) {
   selectedBrandFilter = selectedBrandFilter === key ? null : key;
   renderContent();
 }
 
 function buildChannelConcentration(brandKey) {
-  const srcChs = brandKey === 'ALL' ? CHANNELS : CHANNELS.filter(d => d.brand === brandKey);
-  const chs = srcChs.filter(d => d.rev > 0).sort((a,b) => b.rev - a.rev);
+  let srcChs;
+  if (brandKey === 'ALL') {
+    srcChs = CHANNELS;
+  } else if (brandKey === '유통') {
+    srcChs = CHANNELS.filter(d => !SELF_BRANDS.includes((d.brand || '').trim()));
+  } else {
+    srcChs = CHANNELS.filter(d => d.brand === brandKey);
+  }
+  const chs = srcChs.filter(d => d.rev > 0).sort((a, b) => b.rev - a.rev);
   if (!chs.length) return `<div class="conc-panel"><div style="font-size:13px;color:var(--text3);padding:8px 0">해당 기간 매출 데이터 없음</div></div>`;
-  const totalRev = chs.reduce((s,d) => s+d.rev, 0);
+  const totalRev = chs.reduce((s, d) => s + d.rev, 0);
   const maxRev = chs[0].rev || 1;
   const showBrand = brandKey === 'ALL';
-  const titleLabel = brandKey === 'ALL' ? '전체' : brandKey;
   return `<div class="conc-panel">
     <div class="conc-hdr">
-      <span class="conc-ttl">${titleLabel} · 채널 매출 집중도</span>
+      <span class="conc-ttl">${brandKey === 'ALL' ? '전체' : brandKey} · 채널 매출 집중도</span>
       <span class="conc-meta">${fmtM(totalRev)} · ${chs.length}채널</span>
       <button class="conc-close" onclick="selectBrand('${brandKey}')">✕</button>
     </div>
-    ${chs.map((d,i) => {
-      const share = totalRev ? d.rev/totalRev : 0;
-      const bw = d.rev/maxRev*100;
+    ${chs.map((d, i) => {
+      const share = totalRev ? d.rev / totalRev : 0;
+      const bw = d.rev / maxRev * 100;
       return `<div class="conc-row">
-        <span class="conc-rank">${i+1}</span>
-        ${showBrand ? `<span class="conc-btag">${d.brand}</span>` : ''}
+        <span class="conc-rank">${i + 1}</span>
+        ${showBrand ? `<span class="conc-btag">${brandLabel(d.ch, d.brand)}</span>` : ''}
         <span class="conc-ch">${d.ch}</span>
         <div class="conc-bw"><div class="conc-bf" style="width:${bw}%"></div></div>
-        <span class="conc-pct">${(share*100).toFixed(1)}%</span>
+        <span class="conc-pct">${(share * 100).toFixed(1)}%</span>
         <span class="conc-val">${fmtM(d.rev)}</span>
       </div>`;
     }).join('')}
@@ -967,32 +988,46 @@ function buildChannelConcentration(brandKey) {
 }
 
 function buildBrandSummary() {
-  const brands = ['누디크','스피큘엑스','더콜린'];
-  const allRev = CHANNELS.reduce((s,d)=>s+d.rev,0);
-  const allOM  = CHANNELS.reduce((s,d)=>s+d.om,0);
-  const allOMP = allRev ? allOM/allRev : 0;
+  const allRev = CHANNELS.reduce((s, d) => s + d.rev, 0);
+  const allOM  = CHANNELS.reduce((s, d) => s + d.om, 0);
+  const allOMP = allRev ? allOM / allRev : 0;
 
-  const allCard = `<div class="brand-card brand-card-click ${selectedBrandFilter==='ALL'?'active':''}" onclick="selectBrand('ALL')">
+  // 자체 브랜드 3개 + 유통 집계
+  const BRAND_ORDER = [...SELF_BRANDS, '복합', '유통'];
+  const brandData = {};
+  BRAND_ORDER.forEach(b => { brandData[b] = { rev: 0, om: 0 }; });
+  CHANNELS.forEach(d => {
+    const b = brandLabel(d.ch, d.brand);
+    brandData[b].rev += d.rev;
+    brandData[b].om  += d.om;
+  });
+
+  // 전체 합계 카드
+  const allCard = `<div class="brand-card brand-card-click ${selectedBrandFilter === 'ALL' ? 'active' : ''}" onclick="selectBrand('ALL')">
     <div class="brand-name">전체 합계</div>
     <div class="brand-rev">${fmtM(allRev)}</div>
     <div class="brand-om" style="color:${colorOf(allOMP)}">OM ${pct(allOMP)}</div>
-    <div class="brand-hint">${selectedBrandFilter==='ALL'?'▲ 접기':'채널 분포 보기 ↓'}</div>
+    <div class="brand-hint">${selectedBrandFilter === 'ALL' ? '▲ 접기' : '채널 분포 보기 ↓'}</div>
   </div>`;
 
-  const brandCards = brands.map(b => {
-    const chs = CHANNELS.filter(d => d.brand === b);
-    const rev = chs.reduce((s,d)=>s+d.rev,0);
-    const om  = chs.reduce((s,d)=>s+d.om,0);
-    const omP = rev ? om/rev : 0;
-    return `<div class="brand-card brand-card-click ${selectedBrandFilter===b?'active':''}" onclick="selectBrand('${b}')">
-      <div class="brand-name">${b}</div>
+  // 브랜드별 카드 (자체 3개 + 유통)
+  const brandCards = BRAND_ORDER.map(b => {
+    const { rev, om } = brandData[b];
+    if (rev === 0 && b !== '유통') return ''; // 매출 없는 자체 브랜드는 숨김
+    const omP = rev ? om / rev : 0;
+    const isYutong = b === '유통';
+    return `<div class="brand-card brand-card-click ${selectedBrandFilter === b ? 'active' : ''}" onclick="selectBrand('${b}')"
+      ${isYutong ? 'style="border-color:rgba(110,231,183,0.2)"' : ''}>
+      <div class="brand-name" ${isYutong ? 'style="color:var(--accent2)"' : ''}>${b}</div>
       <div class="brand-rev">${fmtM(rev)}</div>
       <div class="brand-om" style="color:${colorOf(omP)}">OM ${pct(omP)}</div>
-      <div class="brand-hint">${selectedBrandFilter===b?'▲ 접기':'채널 분포 보기 ↓'}</div>
+      <div class="brand-hint">${selectedBrandFilter === b ? '▲ 접기' : '채널 분포 보기 ↓'}</div>
     </div>`;
   }).join('');
 
-  const gridHtml = `<div class="brand-grid" style="grid-template-columns:repeat(4,1fr)">${allCard}${brandCards}</div>`;
+  const visibleCount = BRAND_ORDER.filter(b => brandData[b].rev > 0 || b === '유통').length;
+  const colStyle = `grid-template-columns:repeat(${1 + visibleCount},1fr)`;
+  const gridHtml = `<div class="brand-grid" style="${colStyle}">${allCard}${brandCards}</div>`;
   const concHtml = selectedBrandFilter ? buildChannelConcentration(selectedBrandFilter) : '';
   return gridHtml + concHtml;
 }
@@ -1149,7 +1184,8 @@ loadData();
       <ul class="cl-items">
         <li class="new">브랜드 카드 클릭 시 채널 매출 집중도 패널 표시 (전체 합계 카드 추가)</li>
         <li class="new">채널별 매출 비중(%) · 금액 · 순위 바차트 인라인 표시</li>
-        <li>전체/브랜드별 독립 클릭·접기 지원</li>
+        <li class="new">자체 브랜드(누디크·스피큘엑스·더콜린) 외 채널 자동으로 '유통' 분류 — 시트 수정 불필요</li>
+        <li>전체/브랜드별/유통 독립 클릭·접기 지원</li>
       </ul>
     </div>
 
