@@ -281,6 +281,7 @@
   .conc-bf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
   .conc-pct{font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);width:40px;text-align:right;flex-shrink:0}
   .conc-val{font-size:12px;font-family:'DM Mono',monospace;color:var(--neu);width:56px;text-align:right;flex-shrink:0}
+  .conc-ratio{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);background:var(--surface2);padding:1px 5px;border-radius:3px;flex-shrink:0;margin-left:2px}
 </style>
 </head>
 <body>
@@ -433,11 +434,12 @@ async function loadData() {
       rawRows = data;
       CHANNEL_BRAND_MAP = {};
     }
-    parseForPeriod(activePeriod);
-    buildAllPeriodIndex();
+    try { parseForPeriod(activePeriod); } catch(e2) { throw new Error('[parseForPeriod] ' + e2.message); }
+    try { buildAllPeriodIndex(); } catch(e2) { throw new Error('[buildAllPeriodIndex] ' + e2.message); }
     document.getElementById('period-label').textContent = `${activePeriod} · ${new Date().toLocaleDateString('ko-KR')} 기준`;
-    render();
+    try { render(); } catch(e2) { throw new Error('[render] ' + e2.message); }
   } catch(e) {
+    console.error('BNCO Dashboard Error:', e.message, e.stack || '');
     document.getElementById('content').innerHTML = `
       <div class="error-box">
         <p>⚠ 구글 시트 연결 실패: ${e.message}</p>
@@ -770,7 +772,9 @@ function renderContent() {
     }
   }
 
-  const brandHtml = activeGrp==='ALL' ? buildBrandSummary() : '';
+  let brandHtml = '';
+  try { brandHtml = activeGrp==='ALL' ? buildBrandSummary() : ''; }
+  catch(e2) { console.error('[buildBrandSummary]', e2); brandHtml = ''; }
   const matrixHtml = buildMatrix(chs);
   const simHtml = buildSimulator(chs);
   document.getElementById('content').innerHTML = `
@@ -942,7 +946,12 @@ function momBadge(ch, field) {
 // 자체 브랜드 고정 목록 — 이 외는 모두 '유통'으로 분류
 const SELF_BRANDS = ['누디크', '스피큘엑스', '더콜린'];
 function brandLabel(ch, raw) {
-  if (CHANNEL_BRAND_MAP && CHANNEL_BRAND_MAP[ch]) return CHANNEL_BRAND_MAP[ch];
+  // ALL 뷰 btag 표시용 — 채널의 비율이 가장 높은 브랜드 반환
+  const props = CHANNEL_BRAND_MAP && CHANNEL_BRAND_MAP[ch];
+  if (props && typeof props === 'object') {
+    const top = Object.entries(props).sort((a,b)=>b[1]-a[1])[0];
+    if (top) return top[0];
+  }
   const t = (raw || '').trim();
   return SELF_BRANDS.includes(t) ? t : '유통';
 }
@@ -953,35 +962,47 @@ function selectBrand(key) {
 }
 
 function buildChannelConcentration(brandKey) {
-  let srcChs;
-  if (brandKey === 'ALL') {
-    srcChs = CHANNELS;
-  } else if (brandKey === '유통') {
-    srcChs = CHANNELS.filter(d => !SELF_BRANDS.includes((d.brand || '').trim()));
-  } else {
-    srcChs = CHANNELS.filter(d => d.brand === brandKey);
-  }
-  const chs = srcChs.filter(d => d.rev > 0).sort((a, b) => b.rev - a.rev);
-  if (!chs.length) return `<div class="conc-panel"><div style="font-size:13px;color:var(--text3);padding:8px 0">해당 기간 매출 데이터 없음</div></div>`;
-  const totalRev = chs.reduce((s, d) => s + d.rev, 0);
-  const maxRev = chs[0].rev || 1;
-  const showBrand = brandKey === 'ALL';
+  // 채널별 배분 비율 계산
+  const rows = CHANNELS.map(d => {
+    let allocRev, ratio;
+    const props = CHANNEL_BRAND_MAP && CHANNEL_BRAND_MAP[d.ch];
+    if (brandKey === 'ALL') {
+      allocRev = d.rev; ratio = 1.0;
+    } else if (props && typeof props === 'object' && Object.keys(props).length > 0) {
+      ratio = props[brandKey] || 0;
+      allocRev = d.rev * ratio;
+    } else {
+      // fallback: P&L brand열
+      const fb = SELF_BRANDS.includes((d.brand||'').trim()) ? d.brand.trim() : '유통';
+      ratio = fb === brandKey ? 1.0 : 0;
+      allocRev = d.rev * ratio;
+    }
+    return allocRev > 0 ? { ...d, allocRev, ratio } : null;
+  }).filter(Boolean).sort((a,b) => b.allocRev - a.allocRev);
+
+  if (!rows.length) return `<div class="conc-panel"><div style="font-size:13px;color:var(--text3);padding:8px 0">해당 기간 매출 데이터 없음</div></div>`;
+  const totalAlloc = rows.reduce((s,d) => s + d.allocRev, 0);
+  const maxAlloc   = rows[0].allocRev || 1;
+  const showBrand  = brandKey === 'ALL';
   return `<div class="conc-panel">
     <div class="conc-hdr">
       <span class="conc-ttl">${brandKey === 'ALL' ? '전체' : brandKey} · 채널 매출 집중도</span>
-      <span class="conc-meta">${fmtM(totalRev)} · ${chs.length}채널</span>
+      <span class="conc-meta">${fmtM(totalAlloc)} · ${rows.length}채널</span>
       <button class="conc-close" onclick="selectBrand('${brandKey}')">✕</button>
     </div>
-    ${chs.map((d, i) => {
-      const share = totalRev ? d.rev / totalRev : 0;
-      const bw = d.rev / maxRev * 100;
+    ${rows.map((d,i) => {
+      const share = totalAlloc ? d.allocRev/totalAlloc : 0;
+      const bw    = d.allocRev/maxAlloc*100;
+      const ratioTag = (!showBrand && d.ratio < 0.999)
+        ? `<span class="conc-ratio">${(d.ratio*100).toFixed(0)}%</span>` : '';
       return `<div class="conc-row">
-        <span class="conc-rank">${i + 1}</span>
+        <span class="conc-rank">${i+1}</span>
         ${showBrand ? `<span class="conc-btag">${brandLabel(d.ch, d.brand)}</span>` : ''}
         <span class="conc-ch">${d.ch}</span>
         <div class="conc-bw"><div class="conc-bf" style="width:${bw}%"></div></div>
-        <span class="conc-pct">${(share * 100).toFixed(1)}%</span>
-        <span class="conc-val">${fmtM(d.rev)}</span>
+        <span class="conc-pct">${(share*100).toFixed(1)}%</span>
+        <span class="conc-val">${fmtM(d.allocRev)}</span>
+        ${ratioTag}
       </div>`;
     }).join('')}
   </div>`;
@@ -993,13 +1014,25 @@ function buildBrandSummary() {
   const allOMP = allRev ? allOM / allRev : 0;
 
   // 자체 브랜드 3개 + 유통 집계
-  const BRAND_ORDER = [...SELF_BRANDS, '복합', '유통'];
+  const BRAND_ORDER = [...SELF_BRANDS, '유통'];
   const brandData = {};
   BRAND_ORDER.forEach(b => { brandData[b] = { rev: 0, om: 0 }; });
   CHANNELS.forEach(d => {
-    const b = brandLabel(d.ch, d.brand);
-    brandData[b].rev += d.rev;
-    brandData[b].om  += d.om;
+    const props = CHANNEL_BRAND_MAP && CHANNEL_BRAND_MAP[d.ch];
+    if (props && typeof props === 'object' && Object.keys(props).length > 0) {
+      // SKU 수량 비율 기반 배분
+      Object.entries(props).forEach(([brand, ratio]) => {
+        if (!brandData[brand]) brandData[brand] = { rev: 0, om: 0 };
+        brandData[brand].rev += d.rev * ratio;
+        brandData[brand].om  += d.om  * ratio;
+      });
+    } else {
+      // fallback: P&L brand열
+      const b = SELF_BRANDS.includes((d.brand||'').trim()) ? d.brand.trim() : '유통';
+      if (!brandData[b]) brandData[b] = { rev: 0, om: 0 };
+      brandData[b].rev += d.rev;
+      brandData[b].om  += d.om;
+    }
   });
 
   // 전체 합계 카드
