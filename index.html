@@ -256,6 +256,31 @@
   /* ── EXPORT BTN ── */
   .export-btn{font-size:13px;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s}
   .export-btn:hover{border-color:var(--border2);color:var(--text)}
+
+  /* ── BRAND CLICKABLE ── */
+  .brand-card-click{cursor:pointer;transition:border-color 0.15s,background 0.15s}
+  .brand-card-click:hover{border-color:var(--border2);background:rgba(255,255,255,0.02)}
+  .brand-card-click.active{border-color:rgba(79,142,247,0.45);background:rgba(79,142,247,0.07)}
+  .brand-hint{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:5px;letter-spacing:0.3px}
+  .brand-card-click.active .brand-hint{color:var(--accent);opacity:0.8}
+
+  /* ── CONCENTRATION PANEL ── */
+  .conc-panel{background:var(--surface);border:1px solid rgba(79,142,247,0.2);border-radius:10px;padding:14px 16px;margin-bottom:20px;animation:concFadeIn 0.18s ease}
+  @keyframes concFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+  .conc-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .conc-ttl{font-size:13px;font-weight:500;color:var(--accent);flex:1;font-family:'DM Mono',monospace;letter-spacing:0.5px}
+  .conc-meta{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+  .conc-close{background:none;border:1px solid var(--border);color:var(--text3);width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .conc-close:hover{border-color:var(--border2);color:var(--text)}
+  .conc-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)}
+  .conc-row:last-child{border:none}
+  .conc-rank{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;width:14px;flex-shrink:0;text-align:right}
+  .conc-btag{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);background:var(--surface2);padding:1px 5px;border-radius:2px;flex-shrink:0;min-width:50px;text-align:center}
+  .conc-ch{font-size:13px;color:var(--text);width:120px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .conc-bw{flex:1;height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;min-width:40px}
+  .conc-bf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .conc-pct{font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);width:40px;text-align:right;flex-shrink:0}
+  .conc-val{font-size:12px;font-family:'DM Mono',monospace;color:var(--neu);width:56px;text-align:right;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -336,6 +361,7 @@ let activePeriod = '1Q합계';
 let activeGrp    = 'ALL';
 let openCards    = new Set();
 let viewMode     = 'cards';
+let selectedBrandFilter = null;
 
 // ── 유틸 ──────────────────────────────────────────────────────
 const n  = v => { const x = parseFloat(v); return isNaN(x) ? 0 : x; };
@@ -906,19 +932,69 @@ function momBadge(ch, field) {
 }
 
 // ── BRAND SUMMARY ─────────────────────────────────────────────
+function selectBrand(key) {
+  selectedBrandFilter = selectedBrandFilter === key ? null : key;
+  renderContent();
+}
+
+function buildChannelConcentration(brandKey) {
+  const srcChs = brandKey === 'ALL' ? CHANNELS : CHANNELS.filter(d => d.brand === brandKey);
+  const chs = srcChs.filter(d => d.rev > 0).sort((a,b) => b.rev - a.rev);
+  if (!chs.length) return `<div class="conc-panel"><div style="font-size:13px;color:var(--text3);padding:8px 0">해당 기간 매출 데이터 없음</div></div>`;
+  const totalRev = chs.reduce((s,d) => s+d.rev, 0);
+  const maxRev = chs[0].rev || 1;
+  const showBrand = brandKey === 'ALL';
+  const titleLabel = brandKey === 'ALL' ? '전체' : brandKey;
+  return `<div class="conc-panel">
+    <div class="conc-hdr">
+      <span class="conc-ttl">${titleLabel} · 채널 매출 집중도</span>
+      <span class="conc-meta">${fmtM(totalRev)} · ${chs.length}채널</span>
+      <button class="conc-close" onclick="selectBrand('${brandKey}')">✕</button>
+    </div>
+    ${chs.map((d,i) => {
+      const share = totalRev ? d.rev/totalRev : 0;
+      const bw = d.rev/maxRev*100;
+      return `<div class="conc-row">
+        <span class="conc-rank">${i+1}</span>
+        ${showBrand ? `<span class="conc-btag">${d.brand}</span>` : ''}
+        <span class="conc-ch">${d.ch}</span>
+        <div class="conc-bw"><div class="conc-bf" style="width:${bw}%"></div></div>
+        <span class="conc-pct">${(share*100).toFixed(1)}%</span>
+        <span class="conc-val">${fmtM(d.rev)}</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
 function buildBrandSummary() {
-  const brands = ['누디크','스피큘엑스','더콜린'];
-  return `<div class="brand-grid">${brands.map(b => {
+  const brands = ['누디크','스피큐엑스','더콜린'];
+  const allRev = CHANNELS.reduce((s,d)=>s+d.rev,0);
+  const allOM  = CHANNELS.reduce((s,d)=>s+d.om,0);
+  const allOMP = allRev ? allOM/allRev : 0;
+
+  const allCard = `<div class="brand-card brand-card-click ${selectedBrandFilter==='ALL'?'active':''}" onclick="selectBrand('ALL')">
+    <div class="brand-name">전체 합계</div>
+    <div class="brand-rev">${fmtM(allRev)}</div>
+    <div class="brand-om" style="color:${colorOf(allOMP)}">OM ${pct(allOMP)}</div>
+    <div class="brand-hint">${selectedBrandFilter==='ALL'?'▲ 접기':'채널 분포 보기 ↓'}</div>
+  </div>`;
+
+  const brandCards = brands.map(b => {
     const chs = CHANNELS.filter(d => d.brand === b);
     const rev = chs.reduce((s,d)=>s+d.rev,0);
     const om  = chs.reduce((s,d)=>s+d.om,0);
     const omP = rev ? om/rev : 0;
-    return `<div class="brand-card">
+    return `<div class="brand-card brand-card-click ${selectedBrandFilter===b?'active':''}" onclick="selectBrand('${b}')">
       <div class="brand-name">${b}</div>
       <div class="brand-rev">${fmtM(rev)}</div>
       <div class="brand-om" style="color:${colorOf(omP)}">OM ${pct(omP)}</div>
+      <div class="brand-hint">${selectedBrandFilter===b?'▲ 접기':'채널 분포 보기 ↓'}</div>
     </div>`;
-  }).join('')}</div>`;
+  }).join('');
+
+  const gridHtml = `<div class="brand-grid" style="grid-template-columns:repeat(4,1fr)">${allCard}${brandCards}</div>`;
+  const concHtml = selectedBrandFilter ? buildChannelConcentration(selectedBrandFilter) : '';
+  return gridHtml + concHtml;
 }
 
 // ── MATRIX VIEW ───────────────────────────────────────────────
@@ -1063,6 +1139,18 @@ loadData();
     <div class="cl-header">
       <span class="cl-title">CHANGELOG</span>
       <button class="cl-close" onclick="closeChangelog()">✕</button>
+    </div>
+
+    <div class="cl-entry">
+      <div class="cl-ver">
+        <span class="cl-badge minor">v2.3</span>
+        <span class="cl-date">2026-06-18</span>
+      </div>
+      <ul class="cl-items">
+        <li class="new">브랜드 카드 클릭 시 채널 매출 집중도 패널 표시 (전체 합계 카드 추가)</li>
+        <li class="new">채널별 매출 비중(%) · 금액 · 순위 바차트 인라인 표시</li>
+        <li>전체/브랜드별 독립 클릭·접기 지원</li>
+      </ul>
     </div>
 
     <div class="cl-entry">
