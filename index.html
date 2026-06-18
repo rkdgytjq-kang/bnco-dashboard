@@ -967,7 +967,7 @@ function buildChannelConcentration(brandKey) {
 }
 
 function buildBrandSummary() {
-  const brands = ['누디크','스피큐엑스','더콜린'];
+  const brands = ['누디크','스피큘엑스','더콜린'];
   const allRev = CHANNELS.reduce((s,d)=>s+d.rev,0);
   const allOM  = CHANNELS.reduce((s,d)=>s+d.om,0);
   const allOMP = allRev ? allOM/allRev : 0;
