@@ -429,13 +429,8 @@ async function loadData() {
     });
     if (data && data.rows) {
       rawRows = data.rows;
-      const rawBrandMap = data.brandMap || {};
-            CHANNEL_BRAND_MAP = {};
-            Object.entries(rawBrandMap).forEach(([k, v]) => {
-              CHANNEL_BRAND_MAP[k] = v;
-              const noSpace = k.replace(/\s/g, '');
-              if (noSpace !== k) CHANNEL_BRAND_MAP[noSpace] = v;
-            });
+window._monthlyBrandMap = data.monthlyBrandMap || {};
+      updateBrandMapForPeriod(activePeriod);
     } else {
       rawRows = data;
       CHANNEL_BRAND_MAP = {};
@@ -507,9 +502,21 @@ function parseForPeriod(period) {
 }
 
 // ── 기간 전환 ─────────────────────────────────────────────────
+function updateBrandMapForPeriod(period) {
+  const mMap = window._monthlyBrandMap || {};
+  const raw = mMap[period] || mMap['ALL'] || {};
+  CHANNEL_BRAND_MAP = {};
+  Object.entries(raw).forEach(([k, v]) => {
+    CHANNEL_BRAND_MAP[k] = v;
+    const noSpace = k.replace(/\s/g, '');
+    if (noSpace !== k) CHANNEL_BRAND_MAP[noSpace] = v;
+  });
+}
+
 function setPeriod(period, btn) {
   if (!rawRows.length) return;
   activePeriod = period;
+  updateBrandMapForPeriod(period);
   document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('period-label').textContent = `${period} · ${new Date().toLocaleDateString('ko-KR')} 기준`;
