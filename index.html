@@ -429,7 +429,13 @@ async function loadData() {
     });
     if (data && data.rows) {
       rawRows = data.rows;
-      CHANNEL_BRAND_MAP = data.brandMap || {};
+      const rawBrandMap = data.brandMap || {};
+            CHANNEL_BRAND_MAP = {};
+            Object.entries(rawBrandMap).forEach(([k, v]) => {
+              CHANNEL_BRAND_MAP[k] = v;
+              const noSpace = k.replace(/\s/g, '');
+              if (noSpace !== k) CHANNEL_BRAND_MAP[noSpace] = v;
+            });
     } else {
       rawRows = data;
       CHANNEL_BRAND_MAP = {};
