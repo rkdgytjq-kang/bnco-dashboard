@@ -429,7 +429,13 @@ async function loadData() {
     });
     if (data && data.rows) {
       rawRows = data.rows;
-window._monthlyBrandMap = data.monthlyBrandMap || {};
+if (data.monthlyBrandMap) {
+        window._monthlyBrandMap = data.monthlyBrandMap;
+      } else if (data.brandMap) {
+        window._monthlyBrandMap = { ALL: data.brandMap };
+      } else {
+        window._monthlyBrandMap = {};
+      }
       updateBrandMapForPeriod(activePeriod);
     } else {
       rawRows = data;
