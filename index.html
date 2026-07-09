@@ -9,14 +9,14 @@
 <style>
   :root {
     --bg: #0c0f14; --surface: #13181f; --surface2: #1a2030;
-    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
-    --text: #e8edf5; --text2: #8a95a8; --text3: #4a5568;
+    --border: rgba(255,255,255,0.09); --border2: rgba(255,255,255,0.16);
+    --text: #e8edf5; --text2: #9aa5ba; --text3: #7c88a0;
     --accent: #4f8ef7; --accent2: #6ee7b7;
     --pos: #34d399; --neg: #f87171; --neu: #60a5fa; --warn2: #fbbf24;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; }
 
   /* HEADER */
   .header { position: sticky; top: 0; z-index: 100; background: rgba(12,15,20,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
@@ -169,13 +169,13 @@
   .ch-search:focus{outline:none;border-color:var(--accent)}
   .ch-search::placeholder{color:var(--text3)}
   .search-result-card{margin:0 20px 16px;background:var(--surface2);border:1px solid rgba(79,142,247,0.25);border-radius:10px;padding:14px 16px}
-  .src-title{font-size:10px;color:var(--accent);letter-spacing:1px;font-family:'DM Mono',monospace;margin-bottom:8px}
+  .src-title{font-size:11px;color:var(--accent);letter-spacing:1px;font-family:'DM Mono',monospace;margin-bottom:8px}
   .src-name{font-size:15px;font-weight:500;color:var(--text);margin-bottom:10px}
   .src-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}
   .src-key{color:var(--text2)}
   .src-val{font-family:'DM Mono',monospace;color:var(--text)}
   .src-empty{font-size:13px;color:var(--text3);padding:10px 4px;text-align:center}
-  .src-period-tag{display:inline-block;font-size:10px;background:var(--surface);border:1px solid var(--border2);border-radius:3px;padding:1px 6px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:8px}
+  .src-period-tag{display:inline-block;font-size:11px;background:var(--surface);border:1px solid var(--border2);border-radius:3px;padding:1px 6px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:8px}
 
   /* ── CHANGELOG PANEL ── */
   .cl-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;backdrop-filter:blur(4px)}
@@ -199,8 +199,8 @@
   .cl-items{list-style:none;display:flex;flex-direction:column;gap:5px}
   .cl-items li{font-size:14px;color:var(--text2);padding-left:14px;position:relative;line-height:1.5}
   .cl-items li::before{content:'·';position:absolute;left:0;color:var(--accent)}
-  .cl-items li.new::before{content:'✦';color:var(--pos);font-size:10px;top:1px}
-  .cl-items li.fix::before{content:'⚙';font-size:10px;top:1px;color:var(--warn2)}
+  .cl-items li.new::before{content:'✦';color:var(--pos);font-size:11px;top:1px}
+  .cl-items li.fix::before{content:'⚙';font-size:11px;top:1px;color:var(--warn2)}
 
   /* ── GOALS (목표 입력) ── */
   .goal-input{width:70px;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:2px 6px;text-align:right}
@@ -222,7 +222,7 @@
   /* ── MATRIX VIEW ── */
   .matrix-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
   .matrix-canvas{position:relative;width:100%;height:340px}
-  .matrix-dot{position:absolute;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;font-size:10px;font-family:'DM Mono',monospace;font-weight:500;border:1px solid rgba(255,255,255,0.2)}
+  .matrix-dot{position:absolute;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;font-size:11px;font-family:'DM Mono',monospace;font-weight:500;border:1px solid rgba(255,255,255,0.2)}
   .matrix-dot:hover{z-index:10;filter:brightness(1.3);transform:translate(-50%,-50%) scale(1.15)}
   .matrix-axis{position:absolute;font-size:11px;font-family:'DM Mono',monospace;color:var(--text3)}
   .matrix-grid{position:absolute;inset:0;pointer-events:none}
@@ -240,9 +240,9 @@
   .sim-card-val{font-family:'DM Mono',monospace;font-size:18px;font-weight:500}
 
   /* ── NOTES ── */
-  .note-btn{font-size:10px;padding:1px 6px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;margin-left:8px;font-family:'DM Mono',monospace}
+  .note-btn{font-size:11px;padding:1px 6px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;margin-left:8px;font-family:'DM Mono',monospace}
   .note-btn:hover{border-color:var(--border2);color:var(--text2)}
-  .note-area{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding:8px 10px;resize:vertical;min-height:60px;margin-top:8px}
+  .note-area{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.6;padding:8px 10px;resize:vertical;min-height:60px;margin-top:8px}
   .note-area:focus{outline:none;border-color:var(--accent)}
   .note-saved{font-size:11px;color:var(--pos);font-family:'DM Mono',monospace;margin-top:4px}
 
@@ -261,7 +261,7 @@
   .brand-card-click{cursor:pointer;transition:border-color 0.15s,background 0.15s}
   .brand-card-click:hover{border-color:var(--border2);background:rgba(255,255,255,0.02)}
   .brand-card-click.active{border-color:rgba(79,142,247,0.45);background:rgba(79,142,247,0.07)}
-  .brand-hint{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:5px;letter-spacing:0.3px}
+  .brand-hint{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:5px;letter-spacing:0.3px}
   .brand-card-click.active .brand-hint{color:var(--accent);opacity:0.8}
 
   /* ── CONCENTRATION PANEL ── */
@@ -274,14 +274,14 @@
   .conc-close:hover{border-color:var(--border2);color:var(--text)}
   .conc-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)}
   .conc-row:last-child{border:none}
-  .conc-rank{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;width:14px;flex-shrink:0;text-align:right}
-  .conc-btag{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);background:var(--surface2);padding:1px 5px;border-radius:2px;flex-shrink:0;min-width:50px;text-align:center}
+  .conc-rank{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;width:16px;flex-shrink:0;text-align:right}
+  .conc-btag{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);background:var(--surface2);padding:1px 5px;border-radius:2px;flex-shrink:0;min-width:50px;text-align:center}
   .conc-ch{font-size:13px;color:var(--text);width:120px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .conc-bw{flex:1;height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;min-width:40px}
   .conc-bf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
   .conc-pct{font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);width:40px;text-align:right;flex-shrink:0}
   .conc-val{font-size:12px;font-family:'DM Mono',monospace;color:var(--neu);width:56px;text-align:right;flex-shrink:0}
-  .conc-ratio{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);background:var(--surface2);padding:1px 5px;border-radius:3px;flex-shrink:0;margin-left:2px}
+  .conc-ratio{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);background:var(--surface2);padding:1px 5px;border-radius:3px;flex-shrink:0;margin-left:2px}
 </style>
 </head>
 <body>
