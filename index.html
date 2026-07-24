@@ -8,18 +8,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0c0f14; --surface: #13181f; --surface2: #1a2030;
-    --border: rgba(255,255,255,0.09); --border2: rgba(255,255,255,0.16);
-    --text: #e8edf5; --text2: #9aa5ba; --text3: #7c88a0;
-    --accent: #4f8ef7; --accent2: #6ee7b7;
-    --pos: #34d399; --neg: #f87171; --neu: #60a5fa; --warn2: #fbbf24;
+    --bg: #f5f7fb; --surface: #ffffff; --surface2: #eef1f7;
+    --border: rgba(20,30,50,0.08); --border2: rgba(20,30,50,0.15);
+    --text: #161c28; --text2: #566072; --text3: #717a8c;
+    --accent: #2f6fe0; --accent2: #0ea472;
+    --pos: #078a5c; --neg: #d1382b; --neu: #2262c9; --warn2: #b3730e;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; }
 
   /* HEADER */
-  .header { position: sticky; top: 0; z-index: 100; background: rgba(12,15,20,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .header { position: sticky; top: 0; z-index: 100; background: rgba(245,247,251,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .header-left { display: flex; align-items: baseline; gap: 14px; }
   .logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 3px; color: var(--accent); }
   .period { font-size: 14px; color: var(--text2); background: var(--surface2); border: 1px solid var(--border2); padding: 3px 10px; border-radius: 20px; font-family: 'DM Mono', monospace; }
@@ -65,9 +65,6 @@
   .nav-children.open { display: block; }
 
   /* SUMMARY */
-  .summary-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px; }
-  .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; position: relative; overflow: hidden; }
-  .summary-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); opacity: 0.6; }
   .sc-label { font-size: 13px; color: var(--text2); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
   .sc-value { font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 500; }
   .sc-sub { font-size: 14px; color: var(--text2); margin-top: 4px; font-family: 'DM Mono', monospace; }
@@ -91,38 +88,18 @@
   .metric-main { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500; }
   .metric-pct { font-size: 13px; font-family: 'DM Mono', monospace; margin-top: 2px; }
   .bar-wrap { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
-  .bar-track { flex: 1; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+  .bar-track { flex: 1; height: 3px; background: rgba(20,30,50,0.07); border-radius: 2px; overflow: hidden; }
   .bar-fill { height: 100%; border-radius: 2px; }
   .bar-pos { background: linear-gradient(90deg, var(--pos), var(--accent2)); }
   .bar-neg { background: var(--neg); }
 
   /* DETAIL PANEL */
-  .detail-panel { display: none; border-top: 1px solid var(--border); background: rgba(255,255,255,0.015); padding: 20px; }
+  .detail-panel { display: none; border-top: 1px solid var(--border); background: rgba(20,30,50,0.015); padding: 20px; }
   .detail-panel.open { display: block; }
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .detail-section-title { font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 10px; font-family: 'DM Mono', monospace; }
-  .waterfall { display: flex; flex-direction: column; gap: 4px; }
-  .wf-row { display: flex; align-items: center; gap: 10px; }
-  .wf-label { font-size: 14px; color: var(--text2); width: 130px; flex-shrink: 0; }
-  .wf-bar-area { flex: 1; display: flex; align-items: center; position: relative; height: 20px; }
-  .wf-bar { height: 14px; border-radius: 2px; position: absolute; min-width: 2px; }
-  .wf-bar.revenue { background: rgba(79,142,247,0.6); }
-  .wf-bar.cogs { background: rgba(248,113,113,0.5); }
-  .wf-bar.fee { background: rgba(251,191,36,0.4); }
-  .wf-bar.adv { background: rgba(248,113,113,0.35); }
-  .wf-bar.logi { background: rgba(248,113,113,0.3); }
-  .wf-bar.labor { background: rgba(167,139,250,0.5); }
-  .wf-bar.gp { background: rgba(52,211,153,0.6); }
-  .wf-bar.ci { background: rgba(52,211,153,0.45); }
-  .wf-bar.om-pos { background: rgba(52,211,153,0.8); }
-  .wf-bar.om-neg { background: rgba(248,113,113,0.8); }
-  .wf-value { font-family: 'DM Mono', monospace; font-size: 13px; width: 80px; text-align: right; flex-shrink: 0; }
-  .wf-divider { border: none; border-top: 1px dashed var(--border2); margin: 2px 0; }
-  .indirect-box { background: var(--surface2); border-radius: 8px; padding: 14px 16px; }
-  .indirect-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--border); }
-  .indirect-row:last-child { border: none; }
-  .indirect-key { font-size: 14px; color: var(--text2); }
-  .indirect-val { font-family: 'DM Mono', monospace; font-size: 14px; }
+  .ch-detail-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+  .ch-d-cell { background: var(--surface2); border-radius: 8px; padding: 11px 13px; }
+  .ch-d-label { font-size: 12px; color: var(--text3); margin-bottom: 4px; }
+  .ch-d-value { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 600; }
 
   /* TABLE */
   .table-wrap { overflow-x: auto; }
@@ -132,7 +109,7 @@
   td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: 14px; text-align: right; white-space: nowrap; }
   td:first-child { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: var(--text2); }
   td:nth-child(2) { font-family: 'Noto Sans KR', sans-serif; font-size: 15px; font-weight: 500; text-align: left; }
-  tr:hover td { background: rgba(255,255,255,0.02); }
+  tr:hover td { background: rgba(20,30,50,0.025); }
   tfoot td { background: var(--surface2); font-weight: 600; border-top: 1px solid var(--border2); }
 
   /* VIEW TOGGLE */
@@ -157,15 +134,15 @@
   @media (max-width: 900px) {
     .main { grid-template-columns: 1fr; }
     .sidebar { position: relative; height: auto; top: 0; }
-    .summary-grid { grid-template-columns: repeat(2,1fr); }
+    .summary { flex-direction: column; }
     .channel-header, .col-header { grid-template-columns: 1fr repeat(2,120px); }
     .metric-col:nth-child(3), .metric-col:nth-child(4) { display: none; }
     .col-h:nth-child(3), .col-h:nth-child(4) { display: none; }
-    .detail-grid { grid-template-columns: 1fr; }
+    .ch-detail-grid { grid-template-columns: repeat(2,1fr); }
   }
 
   /* ── CHANNEL SEARCH ── */
-  .ch-search{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding:8px 12px}
+  .ch-search{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;padding:8px 12px}
   .ch-search:focus{outline:none;border-color:var(--accent)}
   .ch-search::placeholder{color:var(--text3)}
   .search-result-card{margin:0 20px 16px;background:var(--surface2);border:1px solid rgba(79,142,247,0.25);border-radius:10px;padding:14px 16px}
@@ -211,77 +188,41 @@
 
   /* ── MOM (전월 대비) ── */
   .mom-badge{font-size:11px;font-family:'DM Mono',monospace;padding:1px 5px;border-radius:3px;margin-left:6px}
-  .mom-up{color:var(--pos);background:rgba(52,211,153,0.1)}
-  .mom-dn{color:var(--neg);background:rgba(248,113,113,0.1)}
-  .mom-flat{color:var(--text3);background:rgba(255,255,255,0.05)}
+  .mom-up{color:var(--pos);background:rgba(7,138,92,0.1)}
+  .mom-dn{color:var(--neg);background:rgba(209,56,43,0.1)}
+  .mom-flat{color:var(--text3);background:rgba(20,30,50,0.05)}
 
   /* ── ALERT ── */
-  .ch-alert{border-color:rgba(248,113,113,0.4) !important}
+  .ch-alert{border-color:rgba(209,56,43,0.4) !important}
   .ch-alert .ch-name::after{content:' ⚠';color:var(--neg);font-size:13px}
-
-  /* ── MATRIX VIEW ── */
-  .matrix-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
-  .matrix-canvas{position:relative;width:100%;height:340px}
-  .matrix-dot{position:absolute;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;font-size:11px;font-family:'DM Mono',monospace;font-weight:500;border:1px solid rgba(255,255,255,0.2)}
-  .matrix-dot:hover{z-index:10;filter:brightness(1.3);transform:translate(-50%,-50%) scale(1.15)}
-  .matrix-axis{position:absolute;font-size:11px;font-family:'DM Mono',monospace;color:var(--text3)}
-  .matrix-grid{position:absolute;inset:0;pointer-events:none}
-
-  /* ── SIM PANEL ── */
-  .sim-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
-  .sim-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-  .sim-label{font-size:14px;color:var(--text2);width:120px;flex-shrink:0}
-  .sim-slider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border2);outline:none}
-  .sim-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer}
-  .sim-val{font-family:'DM Mono',monospace;font-size:14px;color:var(--text);width:48px;text-align:right}
-  .sim-result{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-  .sim-card{background:var(--surface2);border-radius:8px;padding:12px;text-align:center}
-  .sim-card-label{font-size:11px;color:var(--text2);margin-bottom:4px}
-  .sim-card-val{font-family:'DM Mono',monospace;font-size:18px;font-weight:500}
 
   /* ── NOTES ── */
   .note-btn{font-size:11px;padding:1px 6px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;margin-left:8px;font-family:'DM Mono',monospace}
   .note-btn:hover{border-color:var(--border2);color:var(--text2)}
-  .note-area{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.6;padding:8px 10px;resize:vertical;min-height:60px;margin-top:8px}
+  .note-area{width:100%;background:rgba(20,30,50,0.025);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.6;padding:8px 10px;resize:vertical;min-height:60px;margin-top:8px}
   .note-area:focus{outline:none;border-color:var(--accent)}
   .note-saved{font-size:11px;color:var(--pos);font-family:'DM Mono',monospace;margin-top:4px}
-
-  /* ── BRAND SUMMARY ── */
-  .brand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
-  .brand-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
-  .brand-name{font-size:13px;font-family:'DM Mono',monospace;color:var(--text2);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase}
-  .brand-rev{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--neu)}
-  .brand-om{font-size:13px;margin-top:2px}
 
   /* ── EXPORT BTN ── */
   .export-btn{font-size:13px;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s}
   .export-btn:hover{border-color:var(--border2);color:var(--text)}
 
-  /* ── BRAND CLICKABLE ── */
-  .brand-card-click{cursor:pointer;transition:border-color 0.15s,background 0.15s}
-  .brand-card-click:hover{border-color:var(--border2);background:rgba(255,255,255,0.02)}
-  .brand-card-click.active{border-color:rgba(79,142,247,0.45);background:rgba(79,142,247,0.07)}
-  .brand-hint{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:5px;letter-spacing:0.3px}
-  .brand-card-click.active .brand-hint{color:var(--accent);opacity:0.8}
-
-  /* ── CONCENTRATION PANEL ── */
-  .conc-panel{background:var(--surface);border:1px solid rgba(79,142,247,0.2);border-radius:10px;padding:14px 16px;margin-bottom:20px;animation:concFadeIn 0.18s ease}
-  @keyframes concFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
-  .conc-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-  .conc-ttl{font-size:13px;font-weight:500;color:var(--accent);flex:1;font-family:'DM Mono',monospace;letter-spacing:0.5px}
-  .conc-meta{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
-  .conc-close{background:none;border:1px solid var(--border);color:var(--text3);width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  .conc-close:hover{border-color:var(--border2);color:var(--text)}
-  .conc-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)}
-  .conc-row:last-child{border:none}
-  .conc-rank{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;width:16px;flex-shrink:0;text-align:right}
-  .conc-btag{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);background:var(--surface2);padding:1px 5px;border-radius:2px;flex-shrink:0;min-width:50px;text-align:center}
-  .conc-ch{font-size:13px;color:var(--text);width:120px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .conc-bw{flex:1;height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;min-width:40px}
-  .conc-bf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-  .conc-pct{font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);width:40px;text-align:right;flex-shrink:0}
-  .conc-val{font-size:12px;font-family:'DM Mono',monospace;color:var(--neu);width:56px;text-align:right;flex-shrink:0}
-  .conc-ratio{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);background:var(--surface2);padding:1px 5px;border-radius:3px;flex-shrink:0;margin-left:2px}
+  /* ── SUMMARY (매출 중심 심플 요약) ── */
+  .summary { display: flex; gap: 14px; margin-bottom: 24px; align-items: stretch; flex-wrap: wrap; }
+  .sc-primary { all: unset; box-sizing: border-box; flex: 1.6; min-width: 260px; cursor: pointer; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; transition: border-color .15s; }
+  .sc-primary:hover { border-color: var(--border2); }
+  .sc-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .sc-primary-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .sc-chev { color: var(--text3); font-size: 13px; transition: transform .15s; flex-shrink: 0; margin-top: 4px; }
+  .sc-primary.open .sc-chev { transform: rotate(90deg); }
+  .brand-panel { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); grid-template-columns: repeat(auto-fit,minmax(110px,1fr)); gap: 10px; text-align: left; }
+  .sc-primary.open .brand-panel { display: grid; }
+  .brand-cell { background: var(--surface2); border-radius: 8px; padding: 10px 12px; }
+  .brand-cell .b-name { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+  .brand-cell .b-rev { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 600; }
+  .brand-cell .b-share { font-size: 11.5px; color: var(--text3); margin-top: 2px; }
+  .sc-secondary { flex: 1; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; opacity: .92; }
+  .sc-secondary .sc-value2 { font-size: 22px; font-weight: 600; font-family: 'DM Mono', monospace; }
 </style>
 </head>
 <body>
@@ -362,8 +303,9 @@ let activePeriod = '1Q합계';
 let activeGrp    = 'ALL';
 let openCards    = new Set();
 let viewMode     = 'cards';
-let selectedBrandFilter = null;
 let CHANNEL_BRAND_MAP = {};
+// 자체 브랜드 고정 목록 — 이 외는 모두 '유통'으로 분류
+const SELF_BRANDS = ['누디크', '스피큘엑스', '더콜린'];
 
 // ── 유틸 ──────────────────────────────────────────────────────
 const n  = v => { const x = parseFloat(v); return isNaN(x) ? 0 : x; };
@@ -528,6 +470,7 @@ function setPeriod(period, btn) {
   document.getElementById('period-label').textContent = `${period} · ${new Date().toLocaleDateString('ko-KR')} 기준`;
   parseForPeriod(period);
   openCards.clear();
+  revBrandOpen = false;
   render();
 }
 
@@ -578,39 +521,64 @@ function toggleNav(grp) {
   el.classList.toggle('open');
   el.previousElementSibling.classList.toggle('open');
 }
-function setGrp(grp) { activeGrp=grp; openCards.clear(); buildSidebar(); renderContent(); }
+function setGrp(grp) { activeGrp=grp; openCards.clear(); revBrandOpen=false; buildSidebar(); renderContent(); }
 function setView(m)   { viewMode=m; renderContent(); }
 
-// ── SUMMARY ───────────────────────────────────────────────────
-function buildSummary(chs) {
-  const rev=chs.reduce((s,d)=>s+d.rev,0), gp=chs.reduce((s,d)=>s+d.gp,0),
-        ci=chs.reduce((s,d)=>s+d.ci,0),   om=chs.reduce((s,d)=>s+d.om,0);
-  const gpP=rev?gp/rev:0, ciP=rev?ci/rev:0, omP=rev?om/rev:0;
-  return `<div class="summary-grid">
-    <div class="summary-card"><div class="sc-label">매출액</div>
-      <div class="sc-value" style="color:var(--neu)">${fmtM(rev)}</div>
-      <div class="sc-sub">${chs.filter(d=>d.rev!==0).length}개 활성 채널</div></div>
-    <div class="summary-card"><div class="sc-label">매출총이익 (GP)</div>
-      <div class="sc-value" style="color:${colorOf(gp)}">${fmtM(gp)}</div>
-      <div class="sc-sub">GP율 ${pct(gpP)}</div></div>
-    <div class="summary-card"><div class="sc-label">공헌이익 (CI)</div>
-      <div class="sc-value" style="color:${colorOf(ci)}">${fmtM(ci)}</div>
-      <div class="sc-sub">CI율 ${pct(ciP)}</div></div>
-    <div class="summary-card"><div class="sc-label">영업이익 (OM)</div>
-      <div class="sc-value" style="color:${colorOf(om)}">${fmtM(om)}</div>
-      <div class="sc-sub">OM율 ${pct(omP)}</div></div>
-  </div>`;
+// ── SUMMARY (매출 중심 심플 요약) ───────────────────────────────
+let revBrandOpen = false;
+function toggleRevBrand() {
+  revBrandOpen = !revBrandOpen;
+  const card = document.getElementById('rev-card');
+  if (card) card.classList.toggle('open', revBrandOpen);
 }
 
-// ── WATERFALL ROW ─────────────────────────────────────────────
-function wfRow(label, value, cls, maxVal, indent=false) {
-  const bw = maxVal>0 ? Math.min(100, Math.abs(value)/maxVal*100) : 0;
-  return `<div class="wf-row">
-    <span class="wf-label" style="${indent?'padding-left:12px;font-size:13px':''}}">${label}</span>
-    <div class="wf-bar-area">
-      <div class="wf-bar ${cls}" style="width:${bw}%;left:${value>=0?0:100-bw}%"></div>
+function buildBrandBreakdown(chs) {
+  const brandRev = {};
+  [...SELF_BRANDS, '유통'].forEach(b => { brandRev[b] = 0; });
+  chs.forEach(d => {
+    const props = CHANNEL_BRAND_MAP && CHANNEL_BRAND_MAP[d.ch];
+    if (props && typeof props === 'object' && Object.keys(props).length > 0) {
+      Object.entries(props).forEach(([brand, ratio]) => {
+        if (!(brand in brandRev)) brandRev[brand] = 0;
+        brandRev[brand] += d.rev * ratio;
+      });
+    } else {
+      const b = SELF_BRANDS.includes((d.brand||'').trim()) ? d.brand.trim() : '유통';
+      brandRev[b] += d.rev;
+    }
+  });
+  const total = chs.reduce((s,d) => s + d.rev, 0);
+  return Object.entries(brandRev)
+    .filter(([b,rev]) => rev !== 0 || b === '유통')
+    .sort((a,b) => b[1] - a[1])
+    .map(([b,rev]) => `<div class="brand-cell">
+      <div class="b-name">${b}</div>
+      <div class="b-rev num" style="color:var(--neu)">${fmtM(rev)}</div>
+      <div class="b-share num">${total ? (rev/total*100).toFixed(1) : '0.0'}%</div>
+    </div>`).join('');
+}
+
+function buildSummary(chs) {
+  const rev = chs.reduce((s,d)=>s+d.rev,0);
+  const om  = chs.reduce((s,d)=>s+d.om,0);
+  const omP = rev ? om/rev : 0;
+  return `<div class="summary">
+    <button class="sc-primary ${revBrandOpen?'open':''}" id="rev-card" onclick="toggleRevBrand()">
+      <div class="sc-primary-head">
+        <div>
+          <div class="sc-label">매출액 합계</div>
+          <div class="sc-value" style="color:var(--neu)">${fmtM(rev)}</div>
+          <div class="sc-sub">${chs.filter(d=>d.rev!==0).length}개 활성 채널 · 클릭하면 브랜드별 매출 보기</div>
+        </div>
+        <span class="sc-chev">▶</span>
+      </div>
+      <div class="brand-panel">${buildBrandBreakdown(chs)}</div>
+    </button>
+    <div class="sc-secondary">
+      <div class="sc-label">참고 · 영업이익률</div>
+      <div class="sc-value2" style="color:${colorOf(omP)}">${pct(omP)}</div>
+      <div class="sc-sub" style="margin-top:6px">주요 매출·비용 항목 기준 (판관비 일부 미포함) — 손익 확정치 아닌 매출 파악용 참고 수치</div>
     </div>
-    <span class="wf-value" style="color:${colorOf(value)}">${fmt(value)}</span>
   </div>`;
 }
 
@@ -618,7 +586,6 @@ function wfRow(label, value, cls, maxVal, indent=false) {
 function buildCard(d, maxRev) {
   const isOpen = openCards.has(d.ch);
   const bw = maxRev>0 ? Math.abs(d.rev)/maxRev*100 : 0;
-  const wfMax = Math.abs(d.rev) || Math.abs(d.om) || 1;
   const id = 'card-' + d.ch.replace(/[^a-zA-Z0-9]/g,'_');
   const isAlert = d.om_pct < -0.15;
   return `<div class="channel-card ${isAlert?'ch-alert':''}" id="${id}">
@@ -652,45 +619,11 @@ function buildCard(d, maxRev) {
       </div>
     </div>
     <div class="detail-panel ${isOpen?'open':''}">
-      <div class="detail-grid">
-        <div>
-          <div class="detail-section-title">손익 구조</div>
-          <div class="waterfall">
-            ${wfRow('매출액', d.rev, 'revenue', wfMax)}
-            ${wfRow('제품원가', -d.cogs, 'cogs', wfMax)}
-            <hr class="wf-divider">
-            ${wfRow('매출총이익 (GP)', d.gp, d.gp>=0?'gp':'om-neg', wfMax)}
-            ${d.fee  ? wfRow('판매수수료', -d.fee,  'fee',  wfMax, true) : ''}
-            ${d.adv  ? wfRow('광고/프로모션', -d.adv, 'adv',  wfMax, true) : ''}
-            ${d.opfee? wfRow('운영대행비', -d.opfee,'fee',  wfMax, true) : ''}
-            ${d.logi ? wfRow('운반/물류비', -d.logi, 'logi', wfMax, true) : ''}
-            <hr class="wf-divider">
-            ${wfRow('공헌이익 (CI)', d.ci, d.ci>=0?'ci':'om-neg', wfMax)}
-            ${wfRow('간접비 합계', -d.fixed_total, 'labor', wfMax, true)}
-            <hr class="wf-divider">
-            ${wfRow('영업이익 (OM)', d.om, d.om>=0?'om-pos':'om-neg', wfMax)}
-          </div>
-        </div>
-        <div>
-          <div class="detail-section-title">간접비 구성</div>
-          <div class="indirect-box" style="margin-bottom:16px">
-            <div class="indirect-row"><span class="indirect-key">인건비 (배분)</span><span class="indirect-val">${fmt(d.labor)}</span></div>
-            <div class="indirect-row"><span class="indirect-key">기타 간접비</span><span class="indirect-val">${fmt(d.ofixed)}</span></div>
-            <div class="indirect-row" style="border-top:1px solid var(--border2);margin-top:4px;padding-top:8px">
-              <span class="indirect-key" style="color:var(--text)">간접비 합계</span>
-              <span class="indirect-val" style="color:var(--neg)">- ${fmt(d.fixed_total)}</span>
-            </div>
-          </div>
-          <div class="detail-section-title">수익성 지표</div>
-          <div class="indirect-box">
-            <div class="indirect-row"><span class="indirect-key">매출액</span><span class="indirect-val">${fmt(d.rev)}</span></div>
-            <div class="indirect-row"><span class="indirect-key">GP율</span><span class="indirect-val" style="color:${colorOf(d.gp_pct)}">${pct(d.gp_pct)}</span></div>
-            <div class="indirect-row"><span class="indirect-key">직접비 합계</span><span class="indirect-val" style="color:var(--neg)">- ${fmt(d.direct)}</span></div>
-            <div class="indirect-row"><span class="indirect-key">CI율</span><span class="indirect-val" style="color:${colorOf(d.ci_pct)}">${pct(d.ci_pct)}</span></div>
-            <div class="indirect-row"><span class="indirect-key" style="color:var(--text)">OM율</span>
-              <span class="indirect-val" style="color:${colorOf(d.om_pct)};font-size:16px">${pct(d.om_pct)}</span></div>
-          </div>
-        </div>
+      <div class="ch-detail-grid">
+        <div class="ch-d-cell"><div class="ch-d-label">매출총이익 GP</div><div class="ch-d-value" style="color:${colorOf(d.gp)}">${fmt(d.gp)}</div></div>
+        <div class="ch-d-cell"><div class="ch-d-label">공헌이익 CI</div><div class="ch-d-value" style="color:${colorOf(d.ci)}">${fmt(d.ci)}</div></div>
+        <div class="ch-d-cell"><div class="ch-d-label">고정비</div><div class="ch-d-value" style="color:var(--neg)">- ${fmt(d.fixed_total)}</div></div>
+        <div class="ch-d-cell"><div class="ch-d-label">영업이익 OM</div><div class="ch-d-value" style="color:${colorOf(d.om)}">${fmt(d.om)}</div></div>
       </div>
     </div>
     <div style="margin-top:16px;padding-top:0">
@@ -791,13 +724,7 @@ function renderContent() {
     }
   }
 
-  let brandHtml = '';
-  try { brandHtml = activeGrp==='ALL' ? buildBrandSummary() : ''; }
-  catch(e2) { console.error('[buildBrandSummary]', e2); brandHtml = ''; }
-  const matrixHtml = buildMatrix(chs);
-  const simHtml = buildSimulator(chs);
   document.getElementById('content').innerHTML = `
-    ${brandHtml}
     ${buildSummary(chs)}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
       <div class="section-title" style="margin:0">
@@ -809,7 +736,7 @@ function renderContent() {
         <button class="view-btn ${viewMode==='table'?'active':''}" onclick="setView('table')">테이블뷰</button>
       </div>
     </div>
-    ${filterBar}${matrixHtml}${simHtml}${body}
+    ${filterBar}${body}
     <div class="footer">
       <span>비엔코 전략지원본부 · ${activePeriod} 가결산</span>
       <span>CONFIDENTIAL — 내부 공유용</span>
@@ -961,254 +888,6 @@ function momBadge(ch, field) {
   return `<span class="mom-badge ${cls}">${label} ${sign}${Math.abs(m*100).toFixed(0)}%</span>`;
 }
 
-// ── BRAND SUMMARY ─────────────────────────────────────────────
-// 자체 브랜드 고정 목록 — 이 외는 모두 '유통'으로 분류
-const SELF_BRANDS = ['누디크', '스피큘엑스', '더콜린'];
-function brandLabel(ch, raw) {
-  // ALL 뷰 btag 표시용 — 채널의 비율이 가장 높은 브랜드 반환
-  const props = CHANNEL_BRAND_MAP && CHANNEL_BRAND_MAP[ch];
-  if (props && typeof props === 'object') {
-    const top = Object.entries(props).sort((a,b)=>b[1]-a[1])[0];
-    if (top) return top[0];
-  }
-  const t = (raw || '').trim();
-  return SELF_BRANDS.includes(t) ? t : '유통';
-}
-
-function selectBrand(key) {
-  selectedBrandFilter = selectedBrandFilter === key ? null : key;
-  renderContent();
-}
-
-function buildChannelConcentration(brandKey) {
-  // 채널별 배분 비율 계산
-  const rows = CHANNELS.map(d => {
-    let allocRev, ratio;
-    const props = CHANNEL_BRAND_MAP && CHANNEL_BRAND_MAP[d.ch];
-    if (brandKey === 'ALL') {
-      allocRev = d.rev; ratio = 1.0;
-    } else if (props && typeof props === 'object' && Object.keys(props).length > 0) {
-      ratio = props[brandKey] || 0;
-      allocRev = d.rev * ratio;
-    } else {
-      // fallback: P&L brand열
-      const fb = SELF_BRANDS.includes((d.brand||'').trim()) ? d.brand.trim() : '유통';
-      ratio = fb === brandKey ? 1.0 : 0;
-      allocRev = d.rev * ratio;
-    }
-    return allocRev > 0 ? { ...d, allocRev, ratio } : null;
-  }).filter(Boolean).sort((a,b) => b.allocRev - a.allocRev);
-
-  if (!rows.length) return `<div class="conc-panel"><div style="font-size:13px;color:var(--text3);padding:8px 0">해당 기간 매출 데이터 없음</div></div>`;
-  const totalAlloc = rows.reduce((s,d) => s + d.allocRev, 0);
-  const maxAlloc   = rows[0].allocRev || 1;
-  const showBrand  = brandKey === 'ALL';
-  return `<div class="conc-panel">
-    <div class="conc-hdr">
-      <span class="conc-ttl">${brandKey === 'ALL' ? '전체' : brandKey} · 채널 매출 집중도</span>
-      <span class="conc-meta">${fmtM(totalAlloc)} · ${rows.length}채널</span>
-      <button class="conc-close" onclick="selectBrand('${brandKey}')">✕</button>
-    </div>
-    ${rows.map((d,i) => {
-      const share = totalAlloc ? d.allocRev/totalAlloc : 0;
-      const bw    = d.allocRev/maxAlloc*100;
-      const ratioTag = (!showBrand && d.ratio < 0.999)
-        ? `<span class="conc-ratio">${(d.ratio*100).toFixed(0)}%</span>` : '';
-      return `<div class="conc-row">
-        <span class="conc-rank">${i+1}</span>
-        ${showBrand ? `<span class="conc-btag">${brandLabel(d.ch, d.brand)}</span>` : ''}
-        <span class="conc-ch">${d.ch}</span>
-        <div class="conc-bw"><div class="conc-bf" style="width:${bw}%"></div></div>
-        <span class="conc-pct">${(share*100).toFixed(1)}%</span>
-        <span class="conc-val">${fmtM(d.allocRev)}</span>
-        ${ratioTag}
-      </div>`;
-    }).join('')}
-  </div>`;
-}
-
-function buildBrandSummary() {
-  const allRev = CHANNELS.reduce((s, d) => s + d.rev, 0);
-  const allOM  = CHANNELS.reduce((s, d) => s + d.om, 0);
-  const allOMP = allRev ? allOM / allRev : 0;
-
-  // 자체 브랜드 3개 + 유통 집계
-  const BRAND_ORDER = [...SELF_BRANDS, '유통'];
-  const brandData = {};
-  BRAND_ORDER.forEach(b => { brandData[b] = { rev: 0, om: 0 }; });
-  CHANNELS.forEach(d => {
-    const props = CHANNEL_BRAND_MAP && CHANNEL_BRAND_MAP[d.ch];
-    if (props && typeof props === 'object' && Object.keys(props).length > 0) {
-      // SKU 수량 비율 기반 배분
-      Object.entries(props).forEach(([brand, ratio]) => {
-        if (!brandData[brand]) brandData[brand] = { rev: 0, om: 0 };
-        brandData[brand].rev += d.rev * ratio;
-        brandData[brand].om  += d.om  * ratio;
-      });
-    } else {
-      // fallback: P&L brand열
-      const b = SELF_BRANDS.includes((d.brand||'').trim()) ? d.brand.trim() : '유통';
-      if (!brandData[b]) brandData[b] = { rev: 0, om: 0 };
-      brandData[b].rev += d.rev;
-      brandData[b].om  += d.om;
-    }
-  });
-
-  // 전체 합계 카드
-  const allCard = `<div class="brand-card brand-card-click ${selectedBrandFilter === 'ALL' ? 'active' : ''}" onclick="selectBrand('ALL')">
-    <div class="brand-name">전체 합계</div>
-    <div class="brand-rev">${fmtM(allRev)}</div>
-    <div class="brand-om" style="color:${colorOf(allOMP)}">OM ${pct(allOMP)}</div>
-    <div class="brand-hint">${selectedBrandFilter === 'ALL' ? '▲ 접기' : '채널 분포 보기 ↓'}</div>
-  </div>`;
-
-  // 브랜드별 카드 (자체 3개 + 유통)
-  const brandCards = BRAND_ORDER.map(b => {
-    const { rev, om } = brandData[b];
-    if (rev === 0 && b !== '유통') return ''; // 매출 없는 자체 브랜드는 숨김
-    const omP = rev ? om / rev : 0;
-    const isYutong = b === '유통';
-    return `<div class="brand-card brand-card-click ${selectedBrandFilter === b ? 'active' : ''}" onclick="selectBrand('${b}')"
-      ${isYutong ? 'style="border-color:rgba(110,231,183,0.2)"' : ''}>
-      <div class="brand-name" ${isYutong ? 'style="color:var(--accent2)"' : ''}>${b}</div>
-      <div class="brand-rev">${fmtM(rev)}</div>
-      <div class="brand-om" style="color:${colorOf(omP)}">OM ${pct(omP)}</div>
-      <div class="brand-hint">${selectedBrandFilter === b ? '▲ 접기' : '채널 분포 보기 ↓'}</div>
-    </div>`;
-  }).join('');
-
-  const visibleCount = BRAND_ORDER.filter(b => brandData[b].rev > 0 || b === '유통').length;
-  const colStyle = `grid-template-columns:repeat(${1 + visibleCount},1fr)`;
-  const gridHtml = `<div class="brand-grid" style="${colStyle}">${allCard}${brandCards}</div>`;
-  const concHtml = selectedBrandFilter ? buildChannelConcentration(selectedBrandFilter) : '';
-  return gridHtml + concHtml;
-}
-
-// ── MATRIX VIEW ───────────────────────────────────────────────
-function buildMatrix(chs) {
-  if (!chs.length) return '';
-  const maxRev = Math.max(...chs.map(d=>Math.abs(d.rev)),1);
-  const minOM  = Math.min(...chs.map(d=>d.om_pct));
-  const maxOM  = Math.max(...chs.map(d=>d.om_pct));
-  const omRange = maxOM - minOM || 0.01;
-
-  const dots = chs.map(d => {
-    const x = Math.abs(d.rev) / maxRev * 82 + 8;
-    const y = 90 - ((d.om_pct - minOM) / omRange * 80 + 5);
-    const r = Math.max(18, Math.min(42, Math.sqrt(Math.abs(d.ci)/maxRev)*160));
-    const col = d.om_pct > 0.05 ? 'rgba(52,211,153,0.7)'
-               : d.om_pct < 0 ? 'rgba(248,113,113,0.7)'
-               : 'rgba(251,191,36,0.6)';
-    const short = d.ch.length > 6 ? d.ch.slice(0,6)+'…' : d.ch;
-    return `<div class="matrix-dot" title="${d.ch}\n매출: ${fmtM(d.rev)}\nOM율: ${pct(d.om_pct)}"
-      style="left:${x}%;top:${y}%;width:${r}px;height:${r}px;background:${col};font-size:${Math.max(8,r/4)}px;color:#fff">
-      ${short}
-    </div>`;
-  }).join('');
-
-  return `<div class="matrix-wrap">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div style="font-size:14px;font-weight:500">채널 수익성 매트릭스</div>
-      <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">X: 매출액 · Y: OM율 · 크기: CI</div>
-    </div>
-    <div class="matrix-canvas">
-      <div style="position:absolute;left:0;top:0;bottom:20px;width:1px;background:var(--border2)"></div>
-      <div style="position:absolute;left:0;right:0;bottom:20px;height:1px;background:var(--border2)"></div>
-      <div class="matrix-axis" style="left:4px;top:2px">OM율↑</div>
-      <div class="matrix-axis" style="right:4px;bottom:2px">매출↑</div>
-      ${dots}
-    </div>
-  </div>`;
-}
-
-// ── SIMULATOR ─────────────────────────────────────────────────
-function buildSimulator(chs) {
-  const totRev = chs.reduce((s,d)=>s+d.rev,0);
-  const totAdv = chs.reduce((s,d)=>s+d.adv,0);
-  const totOM  = chs.reduce((s,d)=>s+d.om,0);
-  const omP    = totRev ? totOM/totRev : 0;
-  const roas   = totAdv ? totRev/totAdv : 0;          // 매출/광고비
-  const roi    = totAdv ? (totRev-totAdv)/totAdv : 0;  // (매출-광고비)/광고비
-
-  return `<div class="sim-panel">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <div style="font-size:15px;font-weight:500">광고 효율 · 매출 예측 시뮬레이터</div>
-      <div style="font-size:13px;color:var(--text3);font-family:'DM Mono',monospace">${activePeriod} 기준</div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
-      <div style="background:var(--surface2);border-radius:8px;padding:11px">
-        <div style="font-size:13px;color:var(--text2);margin-bottom:4px">광고비</div>
-        <div style="font-family:'DM Mono',monospace;font-size:17px;color:var(--neg)">${fmtM(totAdv)}</div>
-      </div>
-      <div style="background:var(--surface2);border-radius:8px;padding:11px">
-        <div style="font-size:13px;color:var(--text2);margin-bottom:4px">매출액</div>
-        <div style="font-family:'DM Mono',monospace;font-size:17px;color:var(--neu)">${fmtM(totRev)}</div>
-      </div>
-      <div style="background:var(--surface2);border-radius:8px;padding:11px">
-        <div style="font-size:13px;color:var(--text2);margin-bottom:4px">ROAS</div>
-        <div style="font-family:'DM Mono',monospace;font-size:17px;color:${roas>=3?'var(--pos)':roas>=1?'var(--warn2)':'var(--neg)'}">${roas.toFixed(2)}x</div>
-      </div>
-      <div style="background:var(--surface2);border-radius:8px;padding:11px">
-        <div style="font-size:13px;color:var(--text2);margin-bottom:4px">ROI</div>
-        <div style="font-family:'DM Mono',monospace;font-size:17px;color:${colorOf(roi)}">${pct(roi)}</div>
-      </div>
-    </div>
-
-    <div style="background:var(--surface2);border-radius:8px;padding:14px">
-      <div style="font-size:13px;color:var(--text2);margin-bottom:4px">광고비를 추가로 이만큼 늘리거나 줄인다면?</div>
-      <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:10px">
-        현재 ROAS(${roas.toFixed(2)}x) 유지를 가정 — 과거 효율이 그대로 유지된다는 전제의 추정치입니다
-      </div>
-      <div class="sim-row">
-        <span class="sim-label" style="font-size:14px">광고비 증감 (만원)</span>
-        <input type="number" id="sim-adv-input" placeholder="예: +500 또는 -300"
-          style="width:130px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:15px;padding:6px 10px;text-align:right"
-          oninput="updateAdvSim(this.value, ${totRev}, ${totAdv}, ${totOM}, ${roas})">
-        <span style="font-size:13px;color:var(--text3);font-family:'DM Mono',monospace">만원</span>
-      </div>
-      <div class="sim-result" style="margin-top:12px;grid-template-columns:repeat(4,1fr)">
-        <div class="sim-card">
-          <div class="sim-card-label">예상 매출 증감</div>
-          <div class="sim-card-val" id="sim-rev-delta" style="color:var(--text3)">—</div>
-        </div>
-        <div class="sim-card">
-          <div class="sim-card-label">예상 매출액</div>
-          <div class="sim-card-val" id="sim-new-rev" style="color:var(--text3)">—</div>
-        </div>
-        <div class="sim-card">
-          <div class="sim-card-label">예상 OM</div>
-          <div class="sim-card-val" id="sim-new-om" style="color:var(--text3)">—</div>
-        </div>
-        <div class="sim-card">
-          <div class="sim-card-label">예상 OM율</div>
-          <div class="sim-card-val" id="sim-new-omp" style="color:var(--text3)">—</div>
-        </div>
-      </div>
-    </div>
-  </div>`;
-}
-
-function updateAdvSim(inputVal, totRev, totAdv, totOM, roas) {
-  const ids = ['sim-rev-delta','sim-new-rev','sim-new-om','sim-new-omp'];
-  if (inputVal === '' || isNaN(parseFloat(inputVal))) {
-    ids.forEach(id => { const el=document.getElementById(id); if(el){el.textContent='—'; el.style.color='var(--text3)';} });
-    return;
-  }
-  const advDelta  = parseFloat(inputVal) * 10000;       // 광고비 증감액
-  const revDelta  = advDelta * roas;                     // ROAS 기준 예상 매출 증감
-  const newRev    = totRev + revDelta;
-  const newAdv    = totAdv + advDelta;
-  // OM = 매출증감 - 광고비증감 (다른 비용은 매출 증감분에 비례하지 않는다고 가정, 보수적 추정)
-  const newOM     = totOM + revDelta - advDelta;
-  const newOMP    = newRev ? newOM / newRev : 0;
-
-  const set = (id, text, color) => { const el=document.getElementById(id); if(el){el.textContent=text; el.style.color=color;} };
-  set('sim-rev-delta', (revDelta>=0?'+':'')+fmtM(revDelta), colorOf(revDelta));
-  set('sim-new-rev',   fmtM(newRev), 'var(--neu)');
-  set('sim-new-om',    fmtM(newOM),  colorOf(newOM));
-  set('sim-new-omp',   pct(newOMP),  colorOf(newOMP));
-}
-
 // ── PDF EXPORT ────────────────────────────────────────────────
 function exportPDF() {
   window.print();
@@ -1226,6 +905,21 @@ loadData();
     <div class="cl-header">
       <span class="cl-title">CHANGELOG</span>
       <button class="cl-close" onclick="closeChangelog()">✕</button>
+    </div>
+
+    <div class="cl-entry">
+      <div class="cl-ver">
+        <span class="cl-badge major">v3.0</span>
+        <span class="cl-date">2026-07-24</span>
+      </div>
+      <ul class="cl-items">
+        <li class="new">다크 테마 → 라이트 테마 전면 전환 (가독성 개선)</li>
+        <li class="new">메인 화면 단순화 — 채널별 매출 중심 카드 레이아웃으로 재구성</li>
+        <li class="new">매출액 카드 클릭 시 브랜드별(누디크·스피큘엑스·더콜린·유통) 매출 breakdown 표시</li>
+        <li class="fix">영업이익(OM)은 참고용 보조 지표로 축소 — "판관비 일부 미포함, 매출 파악용 참고 수치" 안내 문구 추가</li>
+        <li class="fix">채널 상세 패널을 GP·CI·고정비·OM 4개 핵심 지표로 단순화 (기존 워터폴 차트 제거)</li>
+        <li>채널 수익성 매트릭스 · 광고 시뮬레이터 · 브랜드 집중도 패널 제거 (메인 화면 정보 밀도 감소)</li>
+      </ul>
     </div>
 
     <div class="cl-entry">
