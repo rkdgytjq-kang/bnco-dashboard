@@ -459,11 +459,13 @@ async function loadData() {
     const data = await new Promise((resolve, reject) => {
       const cbName = 'cb_' + Date.now();
       const script = document.createElement('script');
+      // 큐브를 새로 만드는 요청(캐시 만료 직후)은 5초 안팎이 더 걸린다.
+      // 15초로는 간혹 모자라 '연결 실패'가 뜨므로 넉넉히 잡는다.
       const timer = setTimeout(() => {
         delete window[cbName];
         document.body.removeChild(script);
         reject(new Error('timeout'));
-      }, 15000);
+      }, 45000);
       window[cbName] = (d) => {
         clearTimeout(timer);
         delete window[cbName];
@@ -887,9 +889,22 @@ function setCubeFilter(kind, val) {
   if (kind==='seg')   cubeSeg = val;
   if (kind==='grp') { cubeGrp = val; cubeBrand = 'ALL'; }
   if (kind==='brand') cubeBrand = val;
-  cubeOpen = null; renderContent();
+  cubeOpen = null;
+  renderCubeView();   // 채널 손익 렌더러(renderContent)를 부르면 화면이 뒤바뀐다
 }
-function cubeSearch(v) { cubeQuery = v; cubeOpen = null; renderCubeList(); }
+
+/** 필터를 한 번에 해제 */
+function resetCubeFilters() {
+  cubeSeg = 'ALL'; cubeGrp = 'ALL'; cubeBrand = 'ALL'; cubeQuery = '';
+  cubeOpen = null; cubeExpand = {};
+  renderCubeView();
+}
+function cubeSearch(v) {
+  cubeQuery = v; cubeOpen = null;
+  renderCubeView();                     // '적용 중' 표시도 같이 갱신
+  const el = document.getElementById('cube-q');
+  if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+}
 function toggleCubeRow(id) { cubeOpen = (cubeOpen===id ? null : id); renderCubeList(); }
 function toggleCubeMore(id) { cubeExpand[id] = !cubeExpand[id]; renderCubeList(); }
 
@@ -936,7 +951,22 @@ function cubeAgg() {
 function buildCubeFilters() {
   const segs = ['ALL', ...GROUPS];
   const brands = [...new Set(CUBE.skus.filter(s => cubeGrp==='ALL' || s[3]===cubeGrp).map(s => s[2]))].sort();
-  return `
+
+  // 걸려 있는 조건을 한 줄로 보여주고 한 번에 풀 수 있게 한다
+  const on = [];
+  if (cubeSeg   !== 'ALL') on.push(cubeSeg);
+  if (cubeGrp   !== 'ALL') on.push(cubeGrp);
+  if (cubeBrand !== 'ALL') on.push(cubeBrand);
+  if (cubeQuery.trim())    on.push(`"${cubeQuery.trim()}"`);
+  const reset = on.length
+    ? `<div class="cube-filters" style="margin-bottom:12px">
+         <span class="cube-flabel" style="color:var(--accent)">적용 중</span>
+         <span style="font-size:13px;color:var(--text2)">${on.map(cubeEsc).join(' · ')}</span>
+         <button class="filter-btn" style="margin-left:6px;border-color:var(--border2)"
+                 onclick="resetCubeFilters()">✕ 필터 해제</button>
+       </div>` : '';
+
+  return `${reset}
     <div class="cube-filters">
       <span class="cube-flabel">세그먼트</span>
       ${segs.map(s => `<button class="filter-btn ${cubeSeg===s?'active':''}" onclick="setCubeFilter('seg','${cubeEsc(s)}')">${s==='ALL'?'전체':cubeEsc(s)}</button>`).join('')}
