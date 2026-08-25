@@ -1129,12 +1129,22 @@ function renderCubeView() {
   renderCubeList();
 }
 
-/** 채널 손익 화면과 큐브 합계가 어긋나면 이유를 알려준다 */
+/**
+ * 채널 손익 화면과 큐브 합계가 어긋나면 이유를 알려준다.
+ *
+ * 반드시 같은 범위끼리만 비교한다. 구분·브랜드·검색은 채널 손익 쪽에 대응하는
+ * 값이 없으므로 그때는 비교 자체를 하지 않는다. (예전에는 필터를 건 금액을
+ * 채널 손익 '전체'와 견줘서 -97% 같은 무의미한 경고가 떴다)
+ */
 function buildReconNotice(cubeSum) {
-  const plSum = CHANNELS.reduce((s,d) => s + d.rev, 0);
+  if (cubeGrp !== 'ALL' || cubeBrand !== 'ALL' || cubeQuery.trim()) return '';
+
+  const scoped = CHANNELS.filter(d => cubeSeg === 'ALL' || d.grp === cubeSeg);
+  const plSum  = scoped.reduce((s,d) => s + d.rev, 0);
   if (!plSum || !cubeSum) return '';
   const gap = (cubeSum - plSum) / plSum;
   if (Math.abs(gap) < 0.03) return '';   // 3% 미만이면 정상 오차로 보고 표시 안 함
+  const scopeLabel = cubeSeg === 'ALL' ? '' : ` · ${cubeSeg}`;
 
   // 큐브가 더 큰 경우는 대개 채널별_손익 시트에 그 달 매출 수식이 없는 행이 있어서다.
   // (신규 거래처처럼 나중에 생긴 채널은 과거 월 칸이 비어 있는 경우가 많다)
@@ -1145,7 +1155,7 @@ function buildReconNotice(cubeSum) {
 
   return `<div class="error-box" style="background:rgba(179,115,14,.07);border-color:rgba(179,115,14,.28);margin:0 0 18px">
     <p style="color:var(--warn2);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.7">
-      ⚠ <b>채널 손익</b> 화면과 금액이 다릅니다 —
+      ⚠ <b>채널 손익</b> 화면과 금액이 다릅니다 (${activePeriod}${scopeLabel}) —
       채널 손익 ${fmtM(plSum)} / 이 화면 ${fmtM(cubeSum)}
       (<b>${gap>=0?'+':''}${(gap*100).toFixed(1)}%</b>)<br>
       ${reason}<br>
