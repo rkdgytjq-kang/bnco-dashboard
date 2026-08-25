@@ -223,6 +223,84 @@
   .brand-cell .b-share { font-size: 11.5px; color: var(--text3); margin-top: 2px; }
   .sc-secondary { flex: 1; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; opacity: .92; }
   .sc-secondary .sc-value2 { font-size: 22px; font-weight: 600; font-family: 'DM Mono', monospace; }
+
+  /* ── 상단 축 전환 (채널 손익 / 판매처 / SKU) ── */
+  .main.full { grid-template-columns: 1fr; }
+  .main.full .sidebar { display: none; }
+  .axis-bar { display: flex; background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 10px; padding: 4px; width: fit-content; margin-bottom: 6px; flex-wrap: wrap; }
+  .axis-btn { all: unset; cursor: pointer; font-size: 14px; padding: 8px 18px; border-radius: 7px;
+    color: var(--text2); display: flex; align-items: center; gap: 7px; transition: background .12s; }
+  .axis-btn:hover { color: var(--text); }
+  .axis-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .axis-btn .adot { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); }
+  .axis-btn.active { background: var(--surface2); font-weight: 600; color: var(--accent); }
+  .axis-btn.active .adot { background: var(--accent); }
+  .axis-hint { font-size: 12.5px; color: var(--text3); margin-bottom: 18px; }
+  .axis-hint b { color: var(--accent); }
+
+  /* ── 큐브 리스트 ── */
+  .cube-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; align-items: center; }
+  .cube-flabel { font-size: 11.5px; color: var(--text3); margin-right: 2px; text-transform: uppercase; letter-spacing: .5px; }
+  .cube-search { margin-left: auto; background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 6px 11px; font-size: 13.5px; font-family: 'Noto Sans KR', sans-serif; color: var(--text); width: 180px; }
+  .cube-search:focus { outline: none; border-color: var(--accent); }
+  .cube-head { display: grid; grid-template-columns: 1fr 120px 92px 92px 18px; gap: 10px; padding: 12px 14px 8px; }
+  .cube-head span { font-size: 11.5px; color: var(--text3); letter-spacing: .5px; text-transform: uppercase; }
+  .cube-head span.r { text-align: right; }
+  .cube-list { border-top: 1px solid var(--border); }
+  .cube-row { border-bottom: 1px solid var(--border); }
+  .cube-row > button { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: grid;
+    align-items: center; gap: 10px; padding: 11px 14px; border-radius: 8px;
+    grid-template-columns: 1fr 120px 92px 92px 18px; transition: background .12s; }
+  .cube-row > button:hover { background: var(--surface2); }
+  .cube-row > button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .cube-nm { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .cube-tag { font-size: 11px; color: var(--text3); background: var(--surface2); border: 1px solid var(--border);
+    padding: 1px 6px; border-radius: 4px; flex-shrink: 0; white-space: nowrap; }
+  .cube-tag.b { color: #6b4fd0; background: rgba(107,79,208,.08); border-color: rgba(107,79,208,.3); }
+  .cube-tag.g-유통 { color: var(--accent2); background: rgba(14,164,114,.09); border-color: rgba(14,164,114,.3); }
+  .cube-tag.g-ODM { color: var(--accent); background: rgba(47,111,224,.08); border-color: rgba(47,111,224,.3); }
+  .cube-tag.warn { color: var(--warn2); background: rgba(179,115,14,.1); border-color: rgba(179,115,14,.3); }
+  .cube-t { font-size: 14.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cube-rev { text-align: right; font-size: 15px; font-weight: 600; font-family: 'DM Mono', monospace; }
+  .cube-sub { text-align: right; font-size: 13px; color: var(--text2); font-family: 'DM Mono', monospace; }
+  .cube-share { text-align: right; font-size: 12.5px; font-weight: 600; padding: 2px 8px; border-radius: 12px;
+    justify-self: end; font-family: 'DM Mono', monospace; }
+  .cs-hi { color: var(--warn2); background: rgba(179,115,14,.1); }
+  .cs-lo { color: var(--text2); background: var(--surface2); }
+  .cube-chev { color: var(--text3); font-size: 11px; text-align: center; transition: transform .15s; }
+  .cube-row.open .cube-chev { transform: rotate(90deg); }
+  .cube-drill { display: none; padding: 2px 14px 16px; }
+  .cube-row.open .cube-drill { display: block; }
+  .cube-sec { font-size: 11.5px; color: var(--text3); text-transform: uppercase; letter-spacing: .6px;
+    margin: 10px 0 6px; display: flex; align-items: center; gap: 8px; }
+  .cube-sec:first-child { margin-top: 2px; }
+  .cube-sec .ln { flex: 1; height: 1px; background: var(--border); }
+  .cube-sec .eq { text-transform: none; letter-spacing: 0; color: var(--accent); }
+  .brow { display: grid; grid-template-columns: 1fr 78px 104px 112px 50px; align-items: center; gap: 10px;
+    padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+  .brow:last-child { border-bottom: none; }
+  .brow.bd { background: var(--surface2); border-radius: 6px; padding: 7px 10px; margin-bottom: 3px; border-bottom: none; }
+  .brow .bn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: 7px; }
+  .brow .bq { text-align: right; color: var(--text2); font-size: 12.5px; font-family: 'DM Mono', monospace; }
+  .brow .br { text-align: right; font-weight: 600; font-family: 'DM Mono', monospace; }
+  .cbar { height: 6px; background: rgba(20,30,50,.07); border-radius: 3px; overflow: hidden; }
+  .cbar > i { display: block; height: 100%; border-radius: 3px; background: var(--accent); }
+  .cbar.sku > i { background: #6b4fd0; }
+  .cbar.bd > i { background: var(--accent2); }
+  .bp { text-align: right; font-size: 12.5px; color: var(--text2); font-family: 'DM Mono', monospace; }
+  .cube-more { all: unset; cursor: pointer; font-size: 12.5px; color: var(--accent); padding: 6px 0; display: block; }
+  .cube-more:focus-visible { outline: 2px solid var(--accent); }
+  .cube-empty { padding: 22px; color: var(--text3); font-size: 13.5px; text-align: center; }
+
+  @media (max-width: 680px) {
+    .cube-head, .cube-row > button { grid-template-columns: 1fr 96px 18px; }
+    .cube-head span.hm, .cube-sub, .cube-share { display: none; }
+    .brow { grid-template-columns: 1fr 96px 46px; }
+    .brow .bq, .cbar { display: none; }
+    .cube-search { margin-left: 0; width: 100%; }
+  }
 </style>
 </head>
 <body>
@@ -307,6 +385,33 @@ let CHANNEL_BRAND_MAP = {};
 // 자체 브랜드 고정 목록 — 이 외는 모두 '유통'으로 분류
 const SELF_BRANDS = ['누디크', '스피큘엑스', '더콜린'];
 
+// ── 큐브 (판매처 × SKU × 월) ─────────────────────────────────
+let CUBE = null;              // Apps Script buildCube_() 결과
+let mainView   = 'pl';        // 'pl'(채널 손익) | 'vendor'(판매처) | 'sku'
+let cubeOpen   = null;        // 펼쳐진 행 id
+let cubeExpand = {};          // 행별 '더보기' 상태
+let cubeSeg = 'ALL', cubeGrp = 'ALL', cubeBrand = 'ALL', cubeQuery = '';
+
+// 대시보드 기간 → 큐브 월(YYYY-MM) 매핑
+const CUBE_PERIOD = {
+  '1Q합계': ['01','02','03'],
+  '4월': ['04'], '5월': ['05'], '6월': ['06'], '2Q소계': ['04','05','06'],
+  '7월': ['07'], '8월': ['08'], '9월': ['09'], '3Q소계': ['07','08','09'],
+  '10월':['10'], '11월':['11'], '12월':['12'], '4Q소계': ['10','11','12'],
+};
+const CUBE_GROUPS = ['ALL', '브랜드', '유통', 'ODM', '임시등록'];
+
+/** 현재 기간에 해당하는 큐브 월 인덱스 집합 */
+function cubeMonthSet() {
+  if (!CUBE) return null;
+  const mm = CUBE_PERIOD[activePeriod];
+  const set = new Set();
+  CUBE.months.forEach((m, i) => {
+    if (!mm || mm.indexOf(m.slice(5)) >= 0) set.add(i);
+  });
+  return set;
+}
+
 // ── 유틸 ──────────────────────────────────────────────────────
 const n  = v => { const x = parseFloat(v); return isNaN(x) ? 0 : x; };
 const fmt = v => {
@@ -371,6 +476,7 @@ async function loadData() {
     });
     if (data && data.rows) {
       rawRows = data.rows;
+      CUBE = (data.cube && data.cube.facts) ? data.cube : null;
 if (data.monthlyBrandMap) {
         window._monthlyBrandMap = data.monthlyBrandMap;
       } else if (data.brandMap) {
@@ -533,6 +639,29 @@ function toggleRevBrand() {
 }
 
 function buildBrandBreakdown(chs) {
+  // 큐브가 있으면 실제 SKU 매출로 집계 (수량 비율 추정보다 정확)
+  // 전체/세그먼트 보기일 때만 사용 — 개별 채널 선택 시엔 기존 방식 유지
+  if (CUBE && (activeGrp === 'ALL' || GROUPS.includes(activeGrp))) {
+    const ms = cubeMonthSet();
+    const rev = {};
+    let total = 0;
+    for (const [vi, si, mi, r] of CUBE.facts) {
+      if (ms && !ms.has(mi)) continue;
+      if (activeGrp !== 'ALL' && CUBE.vend[vi][1] !== activeGrp) continue;
+      const S = CUBE.skus[si];
+      const b = (S[3] === '브랜드') ? S[2] : S[3];   // 브랜드는 이름으로, 그 외는 구분으로
+      rev[b] = (rev[b] || 0) + r;
+      total += r;
+    }
+    const rows = Object.entries(rev).filter(([, v]) => v !== 0).sort((a, b) => b[1] - a[1]);
+    if (rows.length) {
+      return rows.map(([b, v]) => `<div class="brand-cell">
+        <div class="b-name">${b}</div>
+        <div class="b-rev num" style="color:var(--neu)">${fmtM(v)}</div>
+        <div class="b-share num">${total ? (v/total*100).toFixed(1) : '0.0'}%</div>
+      </div>`).join('');
+    }
+  }
   const brandRev = {};
   [...SELF_BRANDS, '유통'].forEach(b => { brandRev[b] = 0; });
   chs.forEach(d => {
@@ -725,6 +854,7 @@ function renderContent() {
   }
 
   document.getElementById('content').innerHTML = `
+    ${buildAxisBar()}
     ${buildSummary(chs)}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
       <div class="section-title" style="margin:0">
@@ -743,7 +873,273 @@ function renderContent() {
     </div>`;
 }
 
-function render() { loadPrevPeriod(); buildSidebar(); renderContent(); }
+// ══════════════════════════════════════════════════════════════
+//  큐브 뷰 (판매처 기준 / SKU 기준)
+// ══════════════════════════════════════════════════════════════
+const cubeEsc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const cubeTagCls = g => g==='임시등록' ? 'warn' : (g==='유통' ? 'g-유통' : (g==='ODM' ? 'g-ODM' : 'b'));
+
+function setMainView(v) {
+  mainView = v; cubeOpen = null; cubeExpand = {};
+  render();
+}
+function setCubeFilter(kind, val) {
+  if (kind==='seg')   cubeSeg = val;
+  if (kind==='grp') { cubeGrp = val; cubeBrand = 'ALL'; }
+  if (kind==='brand') cubeBrand = val;
+  cubeOpen = null; renderContent();
+}
+function cubeSearch(v) { cubeQuery = v; cubeOpen = null; renderCubeList(); }
+function toggleCubeRow(id) { cubeOpen = (cubeOpen===id ? null : id); renderCubeList(); }
+function toggleCubeMore(id) { cubeExpand[id] = !cubeExpand[id]; renderCubeList(); }
+
+/** 필터를 통과한 팩트만 추출 */
+function cubeScan() {
+  if (!CUBE) return [];
+  const ms = cubeMonthSet();
+  const out = [];
+  for (const f of CUBE.facts) {
+    const [vi, si, mi, rev, qty] = f;
+    if (ms && !ms.has(mi)) continue;
+    if (cubeSeg !== 'ALL' && CUBE.vend[vi][1] !== cubeSeg) continue;
+    const S = CUBE.skus[si];
+    if (cubeGrp   !== 'ALL' && S[3] !== cubeGrp)   continue;
+    if (cubeBrand !== 'ALL' && S[2] !== cubeBrand) continue;
+    out.push([vi, si, rev, qty]);
+  }
+  return out;
+}
+
+/** 축에 맞춰 집계 */
+function cubeAgg() {
+  const out = {};
+  for (const [vi, si, rev, qty] of cubeScan()) {
+    const S = CUBE.skus[si];
+    const key = (mainView==='vendor') ? CUBE.vend[vi][0] : si;
+    if (!out[key]) out[key] = { rev:0, qty:0, sku:{}, brand:{}, vend:{} };
+    out[key].rev += rev; out[key].qty += qty;
+    if (mainView==='vendor') {
+      if (!out[key].sku[si]) out[key].sku[si] = { rev:0, qty:0 };
+      out[key].sku[si].rev += rev; out[key].sku[si].qty += qty;
+      const b = S[2];
+      if (!out[key].brand[b]) out[key].brand[b] = { rev:0, qty:0, g:S[3] };
+      out[key].brand[b].rev += rev; out[key].brand[b].qty += qty;
+    } else {
+      const v = CUBE.vend[vi][0];
+      if (!out[key].vend[v]) out[key].vend[v] = { rev:0, qty:0 };
+      out[key].vend[v].rev += rev; out[key].vend[v].qty += qty;
+    }
+  }
+  return out;
+}
+
+function buildCubeFilters() {
+  const segs = ['ALL', ...GROUPS];
+  const brands = [...new Set(CUBE.skus.filter(s => cubeGrp==='ALL' || s[3]===cubeGrp).map(s => s[2]))].sort();
+  return `
+    <div class="cube-filters">
+      <span class="cube-flabel">세그먼트</span>
+      ${segs.map(s => `<button class="filter-btn ${cubeSeg===s?'active':''}" onclick="setCubeFilter('seg','${cubeEsc(s)}')">${s==='ALL'?'전체':cubeEsc(s)}</button>`).join('')}
+    </div>
+    <div class="cube-filters">
+      <span class="cube-flabel">구분</span>
+      ${CUBE_GROUPS.map(g => `<button class="filter-btn ${cubeGrp===g?'active':''}" onclick="setCubeFilter('grp','${g}')">${g==='ALL'?'전체':g}</button>`).join('')}
+      <input class="cube-search" id="cube-q" placeholder="이름 검색..." value="${cubeEsc(cubeQuery)}" oninput="cubeSearch(this.value)">
+    </div>
+    <div class="cube-filters">
+      <span class="cube-flabel">브랜드</span>
+      ${['ALL',...brands].map(b => `<button class="filter-btn ${cubeBrand===b?'active':''}" onclick="setCubeFilter('brand','${cubeEsc(b)}')">${b==='ALL'?'전체':cubeEsc(b)}</button>`).join('')}
+    </div>`;
+}
+
+function buildCubeSummary(list, sum) {
+  const unit = mainView==='vendor' ? '판매처' : 'SKU';
+  const top  = list[0];
+  const t3   = sum ? list.slice(0,3).reduce((s,x)=>s+x[1].rev,0)/sum*100 : 0;
+  const topName = top ? (mainView==='vendor' ? top[0] : CUBE.skus[top[0]][1]) : '-';
+  return `<div class="summary">
+    <div class="sc-secondary" style="flex:1.4;opacity:1">
+      <div class="sc-label">매출 합계</div>
+      <div class="sc-value" style="color:var(--neu)">${fmtM(sum)}</div>
+      <div class="sc-sub">${list.length}개 ${unit} · ${activePeriod}</div>
+    </div>
+    <div class="sc-secondary">
+      <div class="sc-label">최대 ${unit}</div>
+      <div class="sc-sub" style="font-size:15px;color:var(--text);font-weight:600;margin:2px 0">${cubeEsc(topName)}</div>
+      <div class="sc-sub">${fmtM(top?top[1].rev:0)} · ${sum&&top?(top[1].rev/sum*100).toFixed(1):0}%</div>
+    </div>
+    <div class="sc-secondary">
+      <div class="sc-label">상위 3 집중도</div>
+      <div class="sc-value2" style="color:${t3>=50?'var(--warn2)':'var(--text)'}">${t3.toFixed(1)}%</div>
+      <div class="sc-sub" style="margin-top:4px">상위 3개 합산 비중</div>
+    </div>
+  </div>`;
+}
+
+function renderCubeList() {
+  const el = document.getElementById('cube-list');
+  if (!el) return;
+  const data = cubeAgg();
+  let list = Object.entries(data).sort((a,b) => b[1].rev - a[1].rev);
+  const sum = list.reduce((s,x) => s + x[1].rev, 0);
+  if (cubeQuery.trim()) {
+    const q = cubeQuery.trim().toLowerCase();
+    list = list.filter(([k]) => (mainView==='vendor' ? k : CUBE.skus[k][1]).toLowerCase().includes(q));
+  }
+  if (!list.length) { el.innerHTML = `<div class="cube-empty">해당 조건에 데이터가 없습니다</div>`; return; }
+
+  el.innerHTML = list.map(([k, d], i) => {
+    const id = 'cb_' + mainView + '_' + i;
+    const isOpen = cubeOpen === id;
+    let name, tag, col2, share;
+    if (mainView==='vendor') {
+      name = k;
+      const seg = (CUBE.vend.find(v => v[0]===k) || [])[1] || '';
+      tag = seg ? `<span class="cube-tag">${cubeEsc(seg)}</span>` : '';
+      col2 = Object.keys(d.brand).length + '/' + Object.keys(d.sku).length;
+      share = sum ? d.rev/sum*100 : 0;
+    } else {
+      const S = CUBE.skus[k];
+      name = S[1];
+      tag = `<span class="cube-tag ${cubeTagCls(S[3])}">${cubeEsc(S[2])}</span>`;
+      const vs = Object.entries(d.vend).sort((a,b)=>b[1].rev-a[1].rev);
+      col2 = vs.length + '곳';
+      share = d.rev ? vs[0][1].rev/d.rev*100 : 0;
+    }
+    return `<div class="cube-row ${isOpen?'open':''}" id="${id}">
+      <button onclick="toggleCubeRow('${id}')">
+        <span class="cube-nm">${tag}<span class="cube-t">${cubeEsc(name)}</span></span>
+        <span class="cube-rev">${fmtM(d.rev)}</span>
+        <span class="cube-sub">${col2}</span>
+        <span class="cube-share ${share>=25?'cs-hi':'cs-lo'}">${share.toFixed(1)}%</span>
+        <span class="cube-chev">▶</span>
+      </button>
+      <div class="cube-drill">${isOpen ? buildCubeDrill(id, k, d) : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+function buildCubeDrill(id, key, d) {
+  if (mainView==='sku') {
+    const vs = Object.entries(d.vend).sort((a,b) => b[1].rev - a[1].rev);
+    const max = vs[0][1].rev || 1;
+    const lim = cubeExpand[id] ? vs.length : Math.min(vs.length, 6);
+    const body = vs.slice(0, lim).map(([v, o]) => `<div class="brow">
+        <span class="bn"><span class="cube-t">${cubeEsc(v)}</span></span>
+        <span class="bq">${o.qty.toLocaleString()}개</span>
+        <span class="br">${fmtM(o.rev)}</span>
+        <span class="cbar sku"><i style="width:${o.rev/max*100}%"></i></span>
+        <span class="bp">${(o.rev/d.rev*100).toFixed(1)}%</span></div>`).join('');
+    const more = vs.length > 6
+      ? `<button class="cube-more" onclick="event.stopPropagation();toggleCubeMore('${id}')">${cubeExpand[id]?'▲ 접기':'▼ 나머지 '+(vs.length-6)+'곳 더보기'}</button>` : '';
+    return `<div class="cube-sec">판매처 분포<span class="ln"></span></div>
+      <div style="font-size:12.5px;color:var(--text2);margin-bottom:8px">
+        매출의 <b style="color:#6b4fd0">${(vs[0][1].rev/d.rev*100).toFixed(0)}%</b>가
+        <b>${cubeEsc(vs[0][0])}</b> · ${vs.length}개 판매처 · 총 ${d.qty.toLocaleString()}개</div>
+      ${body}${more}`;
+  }
+
+  // 판매처 축 — 브랜드 구성(= 채널) + 판매 SKU
+  const bs = Object.entries(d.brand).sort((a,b) => b[1].rev - a[1].rev);
+  const bmax = bs[0][1].rev || 1;
+  const bbody = bs.map(([b, o]) => `<div class="brow bd">
+      <span class="bn"><span class="cube-tag ${cubeTagCls(o.g)}">${cubeEsc(b)}</span>
+        <span class="cube-t" style="color:var(--text2);font-size:13px">${cubeEsc(key)}_${cubeEsc(b)}</span></span>
+      <span class="bq">${o.qty.toLocaleString()}개</span>
+      <span class="br">${fmtM(o.rev)}</span>
+      <span class="cbar bd"><i style="width:${o.rev/bmax*100}%"></i></span>
+      <span class="bp">${(o.rev/d.rev*100).toFixed(1)}%</span></div>`).join('');
+
+  const ss = Object.entries(d.sku).sort((a,b) => b[1].rev - a[1].rev);
+  const smax = ss[0][1].rev || 1;
+  const lim = cubeExpand[id] ? ss.length : Math.min(ss.length, 6);
+  const sbody = ss.slice(0, lim).map(([si, o]) => {
+    const S = CUBE.skus[si];
+    return `<div class="brow">
+      <span class="bn"><span class="cube-tag ${cubeTagCls(S[3])}">${cubeEsc(S[2])}</span>
+        <span class="cube-t">${cubeEsc(S[1])}</span></span>
+      <span class="bq">${o.qty.toLocaleString()}개</span>
+      <span class="br">${fmtM(o.rev)}</span>
+      <span class="cbar"><i style="width:${o.rev/smax*100}%"></i></span>
+      <span class="bp">${(o.rev/d.rev*100).toFixed(1)}%</span></div>`;
+  }).join('');
+  const more = ss.length > 6
+    ? `<button class="cube-more" onclick="event.stopPropagation();toggleCubeMore('${id}')">${cubeExpand[id]?'▲ 접기':'▼ 나머지 '+(ss.length-6)+'개 더보기'}</button>` : '';
+
+  return `<div class="cube-sec">브랜드 구성 <span class="eq">= 지금 시트의 채널</span><span class="ln"></span></div>${bbody}
+          <div class="cube-sec">판매 SKU (${ss.length}종)<span class="ln"></span></div>${sbody}${more}`;
+}
+
+function renderCubeView() {
+  const content = document.getElementById('content');
+  if (!CUBE) {
+    content.innerHTML = buildAxisBar() + `<div class="error-box">
+      <p>⚠ 큐브 데이터가 없습니다</p>
+      <p style="margin-top:6px;font-size:14px">Apps Script의 doGet에 <b>cube: buildCube_()</b> 가 추가되고 재배포되었는지 확인하세요.</p></div>`;
+    return;
+  }
+  const data = cubeAgg();
+  const list = Object.entries(data).sort((a,b) => b[1].rev - a[1].rev);
+  const sum  = list.reduce((s,x) => s + x[1].rev, 0);
+  const head = mainView==='vendor'
+    ? `<span>판매처</span><span class="r">매출액</span><span class="r hm">브랜드/SKU</span><span class="r hm">전체비중</span><span></span>`
+    : `<span>SKU</span><span class="r">매출액</span><span class="r hm">판매처</span><span class="r hm">최대비중</span><span></span>`;
+
+  content.innerHTML = `
+    ${buildAxisBar()}
+    ${buildReconNotice(sum)}
+    ${buildCubeSummary(list, sum)}
+    ${buildCubeFilters()}
+    <div class="cube-head">${head}</div>
+    <div class="cube-list" id="cube-list"></div>
+    <div class="footer">
+      <span>비엔코 전략지원본부 · ${activePeriod} · 배송비·샘플비·무상출고 제외</span>
+      <span>CONFIDENTIAL — 내부 공유용</span>
+    </div>`;
+  renderCubeList();
+}
+
+/** 채널 손익 화면과 큐브 합계가 어긋나면 이유를 알려준다 */
+function buildReconNotice(cubeSum) {
+  const plSum = CHANNELS.reduce((s,d) => s + d.rev, 0);
+  if (!plSum || !cubeSum) return '';
+  const gap = (cubeSum - plSum) / plSum;
+  if (Math.abs(gap) < 0.03) return '';   // 3% 미만이면 정상 오차로 보고 표시 안 함
+
+  // 큐브가 더 큰 경우는 대개 채널별_손익 시트에 그 달 매출 수식이 없는 행이 있어서다.
+  // (신규 거래처처럼 나중에 생긴 채널은 과거 월 칸이 비어 있는 경우가 많다)
+  const reason = gap > 0
+    ? `<b>채널별_손익</b> 시트에 ${activePeriod} 매출 수식이 <b>비어 있는 채널</b>이 있어
+       시트 쪽 금액이 그만큼 적게 잡힙니다. 아래 목록에는 해당 매출이 모두 포함돼 있습니다.`
+    : `<b>채널별_손익</b> 시트의 ${activePeriod} 집계 기준이 이 화면과 다릅니다.`;
+
+  return `<div class="error-box" style="background:rgba(179,115,14,.07);border-color:rgba(179,115,14,.28);margin:0 0 18px">
+    <p style="color:var(--warn2);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.7">
+      ⚠ <b>채널 손익</b> 화면과 금액이 다릅니다 —
+      채널 손익 ${fmtM(plSum)} / 이 화면 ${fmtM(cubeSum)}
+      (<b>${gap>=0?'+':''}${(gap*100).toFixed(1)}%</b>)<br>
+      ${reason}<br>
+      <span style="color:var(--text2);font-size:13px">이 화면은 raw_data 원본을 직접 집계한 값이라 누락이 없습니다.</span>
+    </p></div>`;
+}
+
+function buildAxisBar() {
+  const hint = mainView==='pl'
+    ? '채널별 손익(GP·CI·영업이익)입니다. 제품 단위로 보시려면 위 탭을 바꾸세요.'
+    : mainView==='vendor'
+      ? '판매처를 클릭하면 <b>브랜드 구성</b>과 <b>판매 SKU</b>가 함께 열립니다. 브랜드 구성 한 줄이 지금 시트의 채널 한 개입니다.'
+      : 'SKU를 클릭하면 그 제품이 어느 판매처에서 팔렸는지 분포가 열립니다.';
+  const btn = (v, label) => `<button class="axis-btn ${mainView===v?'active':''}" onclick="setMainView('${v}')"><span class="adot"></span>${label}</button>`;
+  return `<div class="axis-bar">${btn('pl','채널 손익')}${btn('vendor','판매처 매출')}${btn('sku','SKU 매출')}</div>
+          <div class="axis-hint">${hint}</div>`;
+}
+
+function render() {
+  const main = document.querySelector('.main');
+  if (main) main.classList.toggle('full', mainView !== 'pl');
+  if (mainView === 'pl') { loadPrevPeriod(); buildSidebar(); renderContent(); }
+  else { renderCubeView(); }
+}
 function toggleCard(ch) {
   if (openCards.has(ch)) openCards.delete(ch); else openCards.add(ch);
   renderContent();
