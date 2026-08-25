@@ -37,6 +37,12 @@
   .m-btn:hover { border-color: var(--border2); color: var(--text); }
   .m-btn.active { background: rgba(79,142,247,0.12); border-color: rgba(79,142,247,0.4); color: var(--accent); }
   .m-btn.qsum { border-style: dashed; }
+  /* 합산 기간(전체·상반기·하반기) — 월 버튼과 한눈에 구분되도록 채워서 표시 */
+  .m-btn.combo { background: var(--surface2); border-color: var(--border2); color: var(--text);
+    font-weight: 600; font-family: 'Noto Sans KR', sans-serif; letter-spacing: -0.2px; }
+  .m-btn.combo:hover { border-color: var(--accent); color: var(--accent); }
+  .m-btn.combo.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .m-sep { width: 1px; align-self: stretch; background: var(--border2); margin: 2px 6px; flex-shrink: 0; }
 
   /* LAYOUT */
   .main { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 100px); }
@@ -242,9 +248,14 @@
   /* ── 큐브 리스트 ── */
   .cube-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; align-items: center; }
   .cube-flabel { font-size: 11.5px; color: var(--text3); margin-right: 2px; text-transform: uppercase; letter-spacing: .5px; }
-  .cube-search { margin-left: auto; background: var(--surface); border: 1px solid var(--border2);
-    border-radius: 8px; padding: 6px 11px; font-size: 13.5px; font-family: 'Noto Sans KR', sans-serif; color: var(--text); width: 180px; }
-  .cube-search:focus { outline: none; border-color: var(--accent); }
+  .cube-searchbar { margin-bottom: 14px; }
+  .cube-search { background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 7px 12px; font-size: 13.5px; font-family: 'Noto Sans KR', sans-serif;
+    color: var(--text); width: 260px; }
+  .cube-search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft, rgba(47,111,224,.12)); }
+  .cube-search::placeholder { color: var(--text3); }
+  .cube-shint { font-size: 12px; color: var(--text3); }
+  @media (max-width: 680px) { .cube-shint { display: none; } }
   .cube-head { display: grid; grid-template-columns: 1fr 120px 92px 92px 18px; gap: 10px; padding: 12px 14px 8px; }
   .cube-head span { font-size: 11.5px; color: var(--text3); letter-spacing: .5px; text-transform: uppercase; }
   .cube-head span.r { text-align: right; }
@@ -320,6 +331,10 @@
 
 <!-- 월별 필터 -->
 <div class="month-bar" id="month-bar">
+  <button class="m-btn combo" data-period="전체" onclick="setPeriod('전체',this)">전체</button>
+  <button class="m-btn combo" data-period="상반기" onclick="setPeriod('상반기',this)">상반기</button>
+  <button class="m-btn combo" data-period="하반기" onclick="setPeriod('하반기',this)">하반기</button>
+  <span class="m-sep"></span>
   <button class="m-btn active" data-period="1Q합계" onclick="setPeriod('1Q합계',this)">1Q 합계</button>
   <button class="m-btn" data-period="4월" onclick="setPeriod('4월',this)">4월</button>
   <button class="m-btn" data-period="5월" onclick="setPeriod('5월',this)">5월</button>
@@ -401,10 +416,17 @@ const CUBE_PERIOD = {
 };
 const CUBE_GROUPS = ['ALL', '브랜드', '유통', 'ODM', '임시등록'];
 
+// 합산 기간의 월 목록 (큐브용)
+const CUBE_COMBO = {
+  '전체'  : null,   // null = 전 기간
+  '상반기': ['01','02','03','04','05','06'],
+  '하반기': ['07','08','09','10','11','12'],
+};
+
 /** 현재 기간에 해당하는 큐브 월 인덱스 집합 */
 function cubeMonthSet() {
   if (!CUBE) return null;
-  const mm = CUBE_PERIOD[activePeriod];
+  const mm = isCombo(activePeriod) ? CUBE_COMBO[activePeriod] : CUBE_PERIOD[activePeriod];
   const set = new Set();
   CUBE.months.forEach((m, i) => {
     if (!mm || mm.indexOf(m.slice(5)) >= 0) set.add(i);
@@ -506,8 +528,48 @@ if (data.monthlyBrandMap) {
   }
 }
 
+// ── 합산 기간 ──────────────────────────────────────────────────
+// 시트에는 '전체·상반기·하반기' 열이 없다. 새로 만들지 않고 이미 있는
+// 월별 열을 브라우저에서 더해서 만든다. (1Q합계 열이 1~3월을 담고 있으므로
+// 상반기 = 1Q합계 + 4·5·6월)
+const COMBO_PERIOD = {
+  '전체'  : ['1Q합계','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+  '상반기': ['1Q합계','4월','5월','6월'],
+  '하반기': ['7월','8월','9월','10월','11월','12월'],
+};
+const isCombo = p => Object.prototype.hasOwnProperty.call(COMBO_PERIOD, p);
+
+/** 합산 기간: 구성 기간들을 각각 파싱해 채널별로 더한다 */
+function parseCombo(period) {
+  const parts = COMBO_PERIOD[period];
+  const acc = new Map();
+  const SUM = ['rev','ret','net','cogs','gp','fee','adv','opfee','logi','ci','labor','ofixed','om','direct','fixed_total'];
+
+  parts.forEach(p => {
+    parseForPeriod(p);
+    CHANNELS.forEach(d => {
+      let t = acc.get(d.ch);
+      if (!t) {
+        t = { grp:d.grp, country:d.country, brand:d.brand, ch:d.ch };
+        SUM.forEach(k => t[k] = 0);
+        acc.set(d.ch, t);
+      }
+      SUM.forEach(k => t[k] += (d[k] || 0));
+    });
+  });
+
+  // 비율은 더하면 안 되고 합계로 다시 구한다
+  CHANNELS = [...acc.values()].map(t => ({
+    ...t,
+    gp_pct: t.net ? t.gp/t.net : 0,
+    ci_pct: t.net ? t.ci/t.net : 0,
+    om_pct: t.net ? t.om/t.net : 0,
+  }));
+}
+
 // ── 기간별 파싱 ────────────────────────────────────────────────
 function parseForPeriod(period) {
+  if (isCombo(period)) { parseCombo(period); return; }
   const baseCol = PERIOD_COL[period];   // 1-indexed
   CHANNELS = [];
 
@@ -974,7 +1036,14 @@ function buildCubeFilters() {
     <div class="cube-filters">
       <span class="cube-flabel">구분</span>
       ${CUBE_GROUPS.map(g => `<button class="filter-btn ${cubeGrp===g?'active':''}" onclick="setCubeFilter('grp','${g}')">${g==='ALL'?'전체':g}</button>`).join('')}
-      <input class="cube-search" id="cube-q" placeholder="이름 검색..." value="${cubeEsc(cubeQuery)}" oninput="cubeSearch(this.value)">
+    </div>
+    <div class="cube-filters cube-searchbar">
+      <span class="cube-flabel">검색</span>
+      <input class="cube-search" id="cube-q" value="${cubeEsc(cubeQuery)}" oninput="cubeSearch(this.value)"
+        placeholder="${mainView==='vendor' ? '판매처 · 제품명 · 브랜드로 찾기' : '제품명 · 판매처로 찾기'}">
+      <span class="cube-shint">${mainView==='vendor'
+        ? '제품명을 넣으면 그 제품을 판 판매처가 나옵니다'
+        : '판매처명을 넣으면 거기서 팔린 제품이 나옵니다'}</span>
     </div>
     <div class="cube-filters">
       <span class="cube-flabel">브랜드</span>
@@ -1012,9 +1081,19 @@ function renderCubeList() {
   const data = cubeAgg();
   let list = Object.entries(data).sort((a,b) => b[1].rev - a[1].rev);
   const sum = list.reduce((s,x) => s + x[1].rev, 0);
+  // 검색은 행 이름뿐 아니라 펼쳤을 때 나오는 항목까지 훑는다.
+  // (판매처 화면에서 제품명으로, SKU 화면에서 판매처명으로 찾을 수 있게)
   if (cubeQuery.trim()) {
     const q = cubeQuery.trim().toLowerCase();
-    list = list.filter(([k]) => (mainView==='vendor' ? k : CUBE.skus[k][1]).toLowerCase().includes(q));
+    list = list.filter(([k, d]) => {
+      const own = (mainView==='vendor' ? k : CUBE.skus[k][1]).toLowerCase();
+      if (own.includes(q)) return true;
+      if (mainView==='vendor') {
+        return Object.keys(d.sku).some(si => CUBE.skus[si][1].toLowerCase().includes(q))
+            || Object.keys(d.brand).some(b => b.toLowerCase().includes(q));
+      }
+      return Object.keys(d.vend).some(v => v.toLowerCase().includes(q));
+    });
   }
   if (!list.length) { el.innerHTML = `<div class="cube-empty">해당 조건에 데이터가 없습니다</div>`; return; }
 
@@ -1287,6 +1366,9 @@ const PREV_PERIOD = {
   '11월':   '10월',
   '12월':   '11월',
   '4Q소계': '3Q소계',
+  '전체':   null,      // 비교 대상 없음
+  '상반기': null,
+  '하반기': '상반기',
 };
 // MoM 라벨 (배지 앞에 표시할 비교 기준 텍스트)
 const PREV_LABEL = {
@@ -1294,6 +1376,7 @@ const PREV_LABEL = {
   '2Q소계':'1Q比','7월':'2Q比','8월':'7월比','9월':'8월比',
   '3Q소계':'2Q比','10월':'3Q比','11월':'10월比','12월':'11월比',
   '4Q소계':'3Q比',
+  '하반기':'상반기比',
 };
 let PREV_CHANNELS = [];
 function loadPrevPeriod() {
@@ -1341,6 +1424,41 @@ loadData();
     <div class="cl-header">
       <span class="cl-title">CHANGELOG</span>
       <button class="cl-close" onclick="closeChangelog()">✕</button>
+    </div>
+
+    <div class="cl-entry">
+      <div class="cl-ver">
+        <span class="cl-badge major">v4.0</span>
+        <span class="cl-date">2026-08-25</span>
+      </div>
+      <ul class="cl-items">
+        <li class="new">상단에 <b>판매처 매출 · SKU 매출</b> 화면 추가 — raw_data 원본을 직접 집계</li>
+        <li class="new">판매처를 열면 <b>브랜드 구성(= 지금 시트의 채널)</b>과 <b>판매 SKU</b>가 함께 표시</li>
+        <li class="new">SKU를 열면 그 제품이 팔린 <b>판매처 분포</b>와 최대 판매처 집중도 표시</li>
+        <li class="new">기간에 <b>전체 · 상반기 · 하반기</b> 추가 (시트 수정 없이 월별 열을 합산)</li>
+        <li class="new">세그먼트 · 구분(브랜드/유통/ODM/임시등록) · 브랜드 필터, 적용 중인 조건 표시와 일괄 해제</li>
+        <li class="new">교차 검색 — 판매처 화면에서 제품명으로, SKU 화면에서 판매처명으로 찾기</li>
+        <li class="new">거래처 이름을 <b>채널_매핑</b> 탭으로 관리 (쿠팡 3개 계정 등 흩어진 거래처를 하나로 합산)</li>
+        <li class="new">raw_data <b>AU열(정산월)</b> 지원 — 출고월과 매출 신고월이 다른 건을 정산월로 집계</li>
+        <li class="fix">브랜드별 매출을 수량 비율 추정이 아닌 <b>실제 SKU 매출</b>로 산출, ODM·유통 분리</li>
+        <li class="fix">채널 손익 화면과 금액이 다를 때 같은 범위끼리 비교해 이유를 안내</li>
+        <li>배송비 · 샘플비 · 무상출고(사은품·체험단)는 매출 집계에서 제외</li>
+      </ul>
+    </div>
+
+    <div class="cl-entry">
+      <div class="cl-ver">
+        <span class="cl-badge fix">시트 정비</span>
+        <span class="cl-date">2026-08-25</span>
+      </div>
+      <ul class="cl-items">
+        <li class="fix"><b>1Q합계</b>가 숨겨진 옛 탭을 날짜 조건 없이 합산하던 문제 — 현재 탭의 1~3월 기준으로 교정</li>
+        <li class="fix">9~12월 수식이 날짜를 글자와 비교해 <b>항상 0</b>이 나오던 문제 (151건)</li>
+        <li class="fix">수식 참조 범위가 1,379 / 13,892 / 14,380행으로 뒤섞여 <b>8월 매출 2,270만원이 누락</b>되던 문제</li>
+        <li class="fix">쿠팡 1~3월 매출이 옛 탭에만 있어 <b>3.4억</b>이 집계에서 빠져 있던 문제</li>
+        <li class="fix">같은 쿠팡 정산건 17행이 <b>중복 입력</b>되어 2,547,228원이 이중 계상되던 문제</li>
+        <li>매출 수식 346건을 한 가지 형태로 통일 (<code>fix_pl_formulas.gs</code>)</li>
+      </ul>
     </div>
 
     <div class="cl-entry">
@@ -1446,7 +1564,7 @@ loadData();
       <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:8px">SYSTEM</div>
       <div style="font-size:13px;color:var(--text2);line-height:1.8">
         시트 ID: <span style="color:var(--text);font-family:'DM Mono',monospace;font-size:11px">1ixpBV1Yql...d1c</span><br>
-        탭: <span style="color:var(--text)">채널별_손익</span><br>
+        탭: <span style="color:var(--text)">채널별_손익 · raw_data(수정금지) (1) · 채널_매핑 · SKU_채널_수량</span><br>
         데이터 소스: <span style="color:var(--text)">Apps Script JSONP</span><br>
         호스팅: <span style="color:var(--text)">GitHub Pages</span>
       </div>
